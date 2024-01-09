@@ -1,0 +1,124 @@
+/*
+ * Copyright (c) 2022 Solana Mobile Inc.
+ */
+
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace = "com.solana.mwallet"
+
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.solana.mwallet"
+        minSdk 23
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
+
+    signingConfigs {
+        create("release") {
+            // APK signing keystore configuration provided by environment variables:
+            //  ORG_GRADLE_PROJECT_apkSigningKeystorePath
+            //  ORG_GRADLE_PROJECT_apkSigningKeystorePassword
+            //  ORG_GRADLE_PROJECT_apkSigningKeyAlias
+            //  ORG_GRADLE_PROJECT_apkSigningKeyPassword
+            final var storePath = findProperty("apkSigningKeystorePath")
+            if (storePath != null) {
+                storeFile = file(storePath)
+            }
+            storePassword = findProperty("apkSigningKeystorePassword")
+            keyAlias = findProperty("apkSigningKeyAlias")
+            keyPassword = findProperty("apkSigningKeyPassword")
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            final var releaseSigningConfig = signingConfigs["release"]
+            if (releaseSigningConfig.storeFile != null && releaseSigningConfig.storeFile.exists()) {
+                signingConfig = releaseSigningConfig
+            }
+        }
+    }
+
+    flavorDimensions = ["protocol_version"]
+
+    productFlavors {
+        v1 {
+            dimension "protocol_version"
+            buildConfigField "com.solana.mobilewalletadapter.common.protocol.SessionProperties.ProtocolVersion",
+                    "PROTOCOL_VERSION", "com.solana.mobilewalletadapter.common.protocol.SessionProperties.ProtocolVersion.V1"
+        }
+        legacy {
+            dimension "protocol_version"
+            resValue "string", "app_name", "MWA Wallet (Legacy)"
+            buildConfigField "com.solana.mobilewalletadapter.common.protocol.SessionProperties.ProtocolVersion",
+                    "PROTOCOL_VERSION", "com.solana.mobilewalletadapter.common.protocol.SessionProperties.ProtocolVersion.LEGACY"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+}
+
+dependencies {
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestUtil 'androidx.test:orchestrator:1.4.2'
+
+    androidTestImplementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.21'
+    androidTestImplementation 'androidx.test:core:1.5.0'
+    androidTestImplementation 'androidx.test:core-ktx:1.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation 'com.solanamobile:mobile-wallet-adapter-clientlib:2.0.0'
+    androidTestImplementation 'com.solanamobile:mobile-wallet-adapter-walletlib:2.0.0'
+
+    annotationProcessor 'androidx.room:room-compiler:2.6.1'
+    implementation 'androidx.activity:activity-ktx:1.8.2'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.6'
+    implementation 'androidx.room:room-runtime:2.6.1'
+    implementation 'androidx.room:room-ktx:2.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.solanamobile:digital-asset-links-android:1.0.2'
+    implementation 'io.coil-kt:coil:2.5.0'
+    implementation 'io.coil-kt:coil-svg:2.5.0'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'io.github.funkatronics:multimult:0.2.0'
+    implementation 'com.solanamobile:mobile-wallet-adapter-walletlib:2.0.0'
+    kapt 'androidx.room:room-compiler:2.6.1'
+}

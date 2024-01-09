@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2022 Solana Mobile Inc.
+ */
+
+package com.solana.mwallet.ui.associate
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import com.solana.mwallet.MobileWalletAdapterViewModel
+import com.solana.mwallet.MobileWalletAdapterViewModel.MobileWalletAdapterServiceRequest
+import com.solana.mwallet.R
+import com.solana.mwallet.databinding.FragmentAssociateBinding
+import com.solana.mwallet.ui.authorizedapp.SignInFragment
+import com.solana.mwallet.ui.authorizedapp.SignInFragmentDirections
+import kotlinx.coroutines.launch
+
+class AssociateFragment : Fragment() {
+    private val activityViewModel: MobileWalletAdapterViewModel by activityViewModels()
+    private lateinit var viewBinding: FragmentAssociateBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        viewBinding = FragmentAssociateBinding.inflate(layoutInflater, container, false)
+        return viewBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                activityViewModel.mobileWalletAdapterServiceEvents.collect { request ->
+                    val navController = findNavController()
+                    // If several events are emitted back-to-back (e.g. during session
+                    // teardown), this fragment may not have had a chance to transition
+                    // lifecycle states. Only navigate if we believe we are still here.
+                    if (navController.currentDestination?.id != R.id.fragment_associate) {
+                        return@collect
+                    }
+
+                    when (request) {
+                        is MobileWalletAdapterServiceRequest.None ->
+                            Unit
+                        is MobileWalletAdapterServiceRequest.AuthorizeDapp ->
+                            navController.navigate(AssociateFragmentDirections.actionAuthorizeDapp())
+                        is MobileWalletAdapterServiceRequest.SignIn ->
+                            navController.navigate(AssociateFragmentDirections.actionSignIn())
+                        is MobileWalletAdapterServiceRequest.SignPayloads,
+                        is MobileWalletAdapterServiceRequest.SignAndSendTransactions ->
+                            navController.navigate(AssociateFragmentDirections.actionSignPayload())
+                        is MobileWalletAdapterServiceRequest.SessionTerminated ->
+                            Unit
+                        is MobileWalletAdapterServiceRequest.LowPowerNoConnection ->
+                            Unit
+                    }
+                }
+            }
+        }
+    }
+}

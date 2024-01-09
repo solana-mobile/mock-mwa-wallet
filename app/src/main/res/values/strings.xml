@@ -1,0 +1,59 @@
+<!--
+  ~ Copyright (c) 2022 Solana Mobile Inc.
+  -->
+
+<resources>
+    <string name="app_name">MWA Wallet</string>
+
+    <!-- Main activity strings -->
+    <string name="label_hello_world">I\'m a wallet!</string>
+
+    <!-- Authorize dapp fragment strings -->
+    <string name="label_authorize_dapp">Authorize dapp</string>
+    <string name="label_verification_state">Status:</string>
+    <string name="label_verification_scope">Scope:</string>
+    <string name="label_simulate_cluster_not_supported">Simulate cluster not supported</string>
+
+    <!-- Sign In fragment strings -->
+    <string name="label_sign_in_with_solana">Sign In With Solana</string>
+    <string name="label_sign_in_payload">Sign In Payload:</string>
+    <string name="label_domain">Domain:</string>
+    <string name="label_siws_uri">URI:</string>
+    <string name="label_issued_at">Issued At:</string>
+    <string name="label_sign_in">Sign In</string>
+    <string name="label_simulate_sign_in_not_supported">Simulate sign in not supported</string>
+
+    <!-- Sign Payload fragment strings -->
+    <string name="label_sign_transactions">Sign transaction(s)</string>
+    <string name="label_sign_messages">Sign message(s)</string>
+    <string name="label_num_txns">Num payloads:</string>
+    <string name="label_simulate_authorization_failed">Simulate auth token invalid</string>
+    <string name="label_simulate_invalid_payloads">Simulate first payload invalid</string>
+    <string name="label_simulate_too_many_payloads">Simulate too many payloads</string>
+
+    <!-- Send Transaction fragment strings -->
+    <string name="label_send_transactions">Sending transaction(s)</string>
+    <string name="label_simulate_transactions_submitted">Simulate submitted</string>
+    <string name="label_simulate_transactions_not_submitted">Simulate submit failed</string>
+    <string name="label_send_transaction_to_cluster">Send transaction to cluster</string>
+
+    <!-- Common strings -->
+    <string name="label_cluster">Cluster:</string>
+    <string name="label_authorize">Authorize</string>
+    <string name="label_decline">Decline</string>
+    <string name="label_simulate_internal_error">Simulate internal error</string>
+
+    <!-- Client verification states -->
+    <string name="str_verification_in_progress">Verification in progress</string>
+    <string name="str_verification_succeeded">Verification successful</string>
+    <string name="str_verification_failed">Verification failed</string>
+    <string name="str_verification_not_verifiable">Client not verifiable</string>
+
+    <!-- No connection due to low power warning strings-->
+    <string name="low_power_mode_warning_title">Low Power Mode</string>
+    <string name="str_low_power_mode_warning_dsc">
+        Your device is currently in power saving mode. Incoming wallet connections will not
+        work properly when the device battery save mode is active. Please turn off battery
+        saver or plug in your phone and try again.
+    </string>
+</resources>
