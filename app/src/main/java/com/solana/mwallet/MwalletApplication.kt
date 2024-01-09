@@ -7,7 +7,7 @@ package com.solana.mwallet
 import android.app.Application
 import com.solana.mwallet.data.Ed25519KeyRepository
 
-class MWAlletApplication : Application() {
+class MwalletApplication : Application() {
     val keyRepository: Ed25519KeyRepository by lazy {
         Ed25519KeyRepository(this)
     }
