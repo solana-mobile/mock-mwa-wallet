@@ -64,7 +64,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
             // manually create the scenario here so we can override the association protocol version
             // this forces ProtocolVersion.LEGACY to simulate a wallet using walletlib 1.x (for testing)
             LocalWebSocketServerScenario(
-                getApplication<MWAlletApplication>().applicationContext,
+                getApplication<MwalletApplication>().applicationContext,
                 MobileWalletAdapterConfig(
                     true,
                     10,
@@ -80,7 +80,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
             )
         } else {
             associationUri.createScenario(
-                getApplication<MWAlletApplication>().applicationContext,
+                getApplication<MwalletApplication>().applicationContext,
                 MobileWalletAdapterConfig(
                     10,
                     10,
@@ -114,7 +114,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
         viewModelScope.launch {
             if (authorized) {
-                val keypair = getApplication<MWAlletApplication>().keyRepository.generateKeypair()
+                val keypair = getApplication<MwalletApplication>().keyRepository.generateKeypair()
                 val publicKey = keypair.public as Ed25519PublicKeyParameters
                 Log.d(TAG, "Generated a new keypair (pub=${publicKey.encoded.contentToString()}) for authorize request")
                 val account = buildAccount(publicKey.encoded, "mwallet")
@@ -156,7 +156,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
         viewModelScope.launch {
             if (authorizeSignIn) {
-                val keypair = getApplication<MWAlletApplication>().keyRepository.generateKeypair()
+                val keypair = getApplication<MwalletApplication>().keyRepository.generateKeypair()
                 val publicKey = keypair.public as Ed25519PublicKeyParameters
                 Log.d(TAG, "Generated a new keypair (pub=${publicKey.encoded.contentToString()}) for authorize request")
 
@@ -195,7 +195,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         }
 
         viewModelScope.launch {
-            val keypair = getApplication<MWAlletApplication>().keyRepository.getKeypair(request.request.authorizedPublicKey)
+            val keypair = getApplication<MwalletApplication>().keyRepository.getKeypair(request.request.authorizedPublicKey)
             check(keypair != null) { "Unknown public key for signing request" }
 
             val valid = BooleanArray(request.request.payloads.size) { true }
@@ -264,7 +264,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
     fun signAndSendTransactionsSimulateSign(request: MobileWalletAdapterServiceRequest.SignAndSendTransactions) {
         viewModelScope.launch {
-            val keypair = getApplication<MWAlletApplication>().keyRepository.getKeypair(request.request.publicKey)
+            val keypair = getApplication<MwalletApplication>().keyRepository.getKeypair(request.request.publicKey)
             check(keypair != null) { "Unknown public key for signing request" }
 
             val signingResults = request.request.payloads.map { payload ->
