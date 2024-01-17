@@ -31,6 +31,15 @@
             android:taskAffinity="com.solana.mwallet.mwa_host_task"
             android:theme="@style/Theme.MwalletApp.BottomSheetDialog"
             android:exported="true">
+            <!-- Custom wallet URI from a browser or native dapp -->
+            <intent-filter android:order="2" android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"/>
+                <data android:host="${walletUriHost}"/>
+                <data android:pathPrefix="${walletUriPath}"/>
+            </intent-filter>
             <!-- Default solana-wallet URI from a browser or native dapp -->
             <intent-filter android:order="1">
                 <action android:name="android.intent.action.VIEW" />
