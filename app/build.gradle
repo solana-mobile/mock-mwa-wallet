@@ -87,12 +87,7 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
-//        compose true
     }
-
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = "1.5.7"
-//    }
 }
 
 dependencies {
@@ -132,23 +127,4 @@ dependencies {
     implementation 'io.github.funkatronics:multimult:0.2.0'
     implementation 'com.solanamobile:digital-asset-links-android:1.0.2'
     implementation 'com.solanamobile:mobile-wallet-adapter-walletlib:2.0.0'
-//    implementation 'com.solanamobile:web3-core:0.2.2'
-//    implementation 'com.solanamobile:rpc-core:0.2.3'
-//    implementation 'com.solanamobile:web3-solana:0.2.0'
-
-//    def composeBom = platform('androidx.compose:compose-bom:2023.10.01')
-//    implementation composeBom
-//    androidTestImplementation composeBom
-//
-//    implementation 'androidx.compose.material3:material3'
-//    implementation 'androidx.compose.material:material-icons-core'
-//
-//    implementation 'androidx.compose.ui:ui-tooling-preview'
-//    debugImplementation 'androidx.compose.ui:ui-tooling'
-//
-//    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
-//    debugImplementation 'androidx.compose.ui:ui-test-manifest'
-//    implementation 'androidx.activity:activity-compose:1.8.2'
-//    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2'
-//    implementation 'androidx.compose.runtime:runtime-livedata'
 }
