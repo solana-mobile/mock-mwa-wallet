@@ -4,6 +4,7 @@
 
 package com.solana.mwallet.ui.signpayload
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,18 +18,19 @@ import androidx.navigation.fragment.findNavController
 import com.solana.mwallet.MobileWalletAdapterViewModel
 import com.solana.mwallet.MobileWalletAdapterViewModel.MobileWalletAdapterServiceRequest
 import com.solana.mwallet.R
-import com.solana.mwallet.databinding.FragmentSignPayloadBinding
+import com.solana.mwallet.databinding.FragmentSignMessageBinding
+import com.solana.mwallet.extensions.loadImage
 import kotlinx.coroutines.launch
 
 class SignPayloadFragment : Fragment() {
     private val activityViewModel: MobileWalletAdapterViewModel by activityViewModels()
-    private lateinit var viewBinding: FragmentSignPayloadBinding
+    private lateinit var viewBinding: FragmentSignMessageBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding = FragmentSignPayloadBinding.inflate(layoutInflater, container, false)
+        viewBinding = FragmentSignMessageBinding.inflate(layoutInflater, container, false)
         return viewBinding.root
     }
 
@@ -40,38 +42,39 @@ class SignPayloadFragment : Fragment() {
                 activityViewModel.mobileWalletAdapterServiceEvents.collect { request ->
                     when (request) {
                         is MobileWalletAdapterServiceRequest.SignPayloads -> {
+
+                            if (request.request.identityUri?.isAbsolute == true &&
+                                request.request.iconRelativeUri?.isHierarchical == true
+                            ) {
+                                val uri = Uri.withAppendedPath(
+                                    request.request.identityUri!!,
+                                    request.request.iconRelativeUri!!.encodedPath
+                                )
+                                viewBinding.imageIcon.loadImage(uri.toString())
+                            }
+                            viewBinding.textName.text = request.request.identityName ?: "<no name>"
+
                             val res =
                                 if (request is MobileWalletAdapterServiceRequest.SignTransactions) {
-                                    R.string.label_sign_transactions
+                                    R.string.label_requesting_transactions
                                 } else {
                                     R.string.label_sign_messages
                                 }
-                            viewBinding.textSignPayloads.setText(res)
-                            viewBinding.textNumTransactions.text =
-                                request.request.payloads.size.toString()
+                            viewBinding.textSubtitle.setText(res)
 
-                            viewBinding.btnAuthorize.setOnClickListener {
+                            if (request is MobileWalletAdapterServiceRequest.SignTransactions) {
+                                viewBinding.textMessageTitle.visibility = View.GONE
+                                viewBinding.textMessage.visibility = View.GONE
+                            } else {
+                                viewBinding.textMessage.text = request.request.payloads.first().decodeToString()
+                            }
+
+                            viewBinding.btnApprove.setOnClickListener {
                                 activityViewModel.signPayloadsSimulateSign(request)
                             }
 
-                            viewBinding.btnDecline.setOnClickListener {
+                            viewBinding.btnCancel.setOnClickListener {
                                 activityViewModel.signPayloadsDeclined(request)
-                            }
-
-                            viewBinding.btnSimulateAuthorizationFailed.setOnClickListener {
-                                activityViewModel.signPayloadsSimulateAuthTokenInvalid(request)
-                            }
-
-                            viewBinding.btnSimulateInvalidPayloads.setOnClickListener {
-                                activityViewModel.signPayloadsSimulateInvalidPayloads(request)
-                            }
-
-                            viewBinding.btnSimulateTooManyPayloads.setOnClickListener {
-                                activityViewModel.signPayloadsSimulateTooManyPayloads(request)
-                            }
-
-                            viewBinding.btnSimulateInternalError.setOnClickListener {
-                                activityViewModel.signPayloadsSimulateInternalError(request)
                             }
                         }
                         is MobileWalletAdapterServiceRequest.SignAndSendTransactions -> {
@@ -81,32 +84,14 @@ class SignPayloadFragment : Fragment() {
                                 return@collect
                             }
 
-                            viewBinding.textSignPayloads.setText(R.string.label_sign_transactions)
-                            viewBinding.textNumTransactions.text =
-                                request.request.payloads.size.toString()
+                            viewBinding.textSubtitle.setText(R.string.label_requesting_transactions)
 
-                            viewBinding.btnAuthorize.setOnClickListener {
+                            viewBinding.btnApprove.setOnClickListener {
                                 activityViewModel.signAndSendTransactionsSimulateSign(request)
                             }
 
-                            viewBinding.btnDecline.setOnClickListener {
+                            viewBinding.btnCancel.setOnClickListener {
                                 activityViewModel.signAndSendTransactionsDeclined(request)
-                            }
-
-                            viewBinding.btnSimulateAuthorizationFailed.setOnClickListener {
-                                activityViewModel.signAndSendTransactionsSimulateAuthTokenInvalid(request)
-                            }
-
-                            viewBinding.btnSimulateInvalidPayloads.setOnClickListener {
-                                activityViewModel.signAndSendTransactionsSimulateInvalidPayloads(request)
-                            }
-
-                            viewBinding.btnSimulateTooManyPayloads.setOnClickListener {
-                                activityViewModel.signAndSendTransactionsSimulateTooManyPayloads(request)
-                            }
-
-                            viewBinding.btnSimulateInternalError.setOnClickListener {
-                                activityViewModel.signAndSendTransactionsSimulateInternalError(request)
                             }
                         }
                         else -> {

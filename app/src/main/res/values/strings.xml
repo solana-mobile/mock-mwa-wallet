@@ -15,16 +15,11 @@
     <string name="label_simulate_cluster_not_supported">Simulate cluster not supported</string>
 
     <!-- Sign In fragment strings -->
-    <string name="label_sign_in_with_solana">Sign In With Solana</string>
-    <string name="label_sign_in_payload">Sign In Payload:</string>
-    <string name="label_domain">Domain:</string>
-    <string name="label_siws_uri">URI:</string>
-    <string name="label_issued_at">Issued At:</string>
     <string name="label_sign_in">Sign In</string>
-    <string name="label_simulate_sign_in_not_supported">Simulate sign in not supported</string>
+    <string name="label_sign_in_subtitle">wants you to sign in with your Solana account</string>
+    <string name="label_message">message:</string>
 
     <!-- Sign Payload fragment strings -->
-    <string name="label_sign_transactions">Sign transaction(s)</string>
     <string name="label_sign_messages">Sign message(s)</string>
     <string name="label_num_txns">Num payloads:</string>
     <string name="label_simulate_authorization_failed">Simulate auth token invalid</string>
@@ -32,12 +27,17 @@
     <string name="label_simulate_too_many_payloads">Simulate too many payloads</string>
 
     <!-- Send Transaction fragment strings -->
+    <string name="label_requesting_transactions">is requesting transaction(s)</string>
     <string name="label_send_transactions">Sending transaction(s)</string>
     <string name="label_simulate_transactions_submitted">Simulate submitted</string>
     <string name="label_simulate_transactions_not_submitted">Simulate submit failed</string>
     <string name="label_send_transaction_to_cluster">Send transaction to cluster</string>
 
     <!-- Common strings -->
+    <string name="label_wants_to_connect">wants to connect</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="label_connect">Connect</string>
+    <string name="label_approve">Approve</string>
     <string name="label_cluster">Cluster:</string>
     <string name="label_authorize">Authorize</string>
     <string name="label_decline">Decline</string>
