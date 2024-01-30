@@ -214,7 +214,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         request.request.completeWithDecline()
     }
 
-    fun signAndSendTransactionsSimulateSign(request: MobileWalletAdapterServiceRequest.SignAndSendTransactions) {
+    fun signAndSendTransactionsSign(request: MobileWalletAdapterServiceRequest.SignAndSendTransactions) {
         viewModelScope.launch {
             val keypair = getApplication<MwalletApplication>().keyRepository.getKeypair(request.request.publicKey)
             check(keypair != null) { "Unknown public key for signing request" }
@@ -230,7 +230,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
             val valid = signingResults.map { result -> result.signature.isNotEmpty() }
             if (valid.all { it }) {
-                Log.d(TAG, "Simulating signing with ${request.request.publicKey}")
+                Log.d(TAG, "Signing with ${request.request.publicKey}")
                 val signatures = signingResults.map { result -> result.signature }
                 val signedTransactions = signingResults.map { result -> result.signedPayload }
                 val requestWithSignatures = request.copy(
@@ -257,35 +257,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         request.request.completeWithDecline()
     }
 
-    fun signAndSendTransactionsSubmitted(request: MobileWalletAdapterServiceRequest.SignAndSendTransactions) {
-        if (rejectStaleRequest(request)) {
-            return
-        }
-
-        Log.d(TAG, "Simulating transactions submitted on cluster=${request.request.chain}")
-
-        request.request.completeWithSignatures(request.signatures!!)
-    }
-
-    fun signAndSendTransactionsNotSubmitted(request: MobileWalletAdapterServiceRequest.SignAndSendTransactions) {
-        if (rejectStaleRequest(request)) {
-            return
-        }
-
-        Log.d(TAG, "Simulating transactions NOT submitted on cluster=${request.request.chain}")
-
-        val signatures = request.signatures!!
-        val notSubmittedSignatures = Array(signatures.size) { i ->
-            if (i != 0) signatures[i] else null
-        }
-        request.request.completeWithNotSubmitted(notSubmittedSignatures)
-    }
-
     fun signAndSendTransactionsSend(request: MobileWalletAdapterServiceRequest.SignAndSendTransactions) {
-        if (rejectStaleRequest(request)) {
-            return
-        }
-
         Log.d(TAG, "Sending transactions to ${request.endpointUri}")
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -301,10 +273,17 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                     request.request.skipPreflight,
                     request.request.maxRetries
                 )
+                // TODO: await confirmation and update UI with progress
                 Log.d(TAG, "All transactions submitted via RPC")
+                if (rejectStaleRequest(request)) {
+                    return@launch
+                }
                 request.request.completeWithSignatures(request.signatures)
             } catch (e: SendTransactionsUseCase.InvalidTransactionsException) {
                 Log.e(TAG, "Failed submitting transactions via RPC", e)
+                if (rejectStaleRequest(request)) {
+                    return@launch
+                }
                 request.request.completeWithInvalidSignatures(e.valid)
             }
         }

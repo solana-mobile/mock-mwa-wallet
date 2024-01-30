@@ -43,6 +43,7 @@ class SendTransactionFragment : Fragment() {
                         is MobileWalletAdapterViewModel.MobileWalletAdapterServiceRequest.SignAndSendTransactions -> {
                             this@SendTransactionFragment.request = request
                             viewBinding.textCluster.text = request.request.cluster
+                            activityViewModel.signAndSendTransactionsSend(request)
                         }
                         else -> {
                             this@SendTransactionFragment.request = null
@@ -58,18 +59,6 @@ class SendTransactionFragment : Fragment() {
                     }
                 }
             }
-        }
-
-        viewBinding.btnSimulateTransactionsSubmitted.setOnClickListener {
-            activityViewModel.signAndSendTransactionsSubmitted(request!!)
-        }
-
-        viewBinding.btnSimulateTransactionsNotSubmitted.setOnClickListener {
-            activityViewModel.signAndSendTransactionsNotSubmitted(request!!)
-        }
-
-        viewBinding.btnSendTransactionToCluster.setOnClickListener {
-            activityViewModel.signAndSendTransactionsSend(request!!)
         }
     }
 }
