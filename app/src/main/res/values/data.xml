@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallet_icon_uri">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAZklEQVR4nO2UMQqAMAxF3+SdLHW3N9Nrtug1vksnh6ItQYQ8+FvIg4QEnJdMwA6cgDrTZBtorCeCoxbNGKGaYC1QZwqQLAUCsrVALtAXIwpAtBREYPEl6xd3UKxfRRqUZGBtCRzuXKaaGW1OTfwgAAAAAElFTkSuQmCC</string>
+</resources>
