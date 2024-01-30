@@ -25,6 +25,11 @@ android {
         manifestPlaceholders = [ walletUriHost: "solanamobile.com", walletUriPath: "/mwallet/"]
         buildConfigField "android.net.Uri",
                 "WALLET_URI_BASE", "android.net.Uri.parse(\"https://solanamobile.com/mwallet/\")"
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        def privateKey = properties.getProperty('privateKey')
+        buildConfigField "String", "PRIVATE_KEY", privateKey ? "\"$privateKey\"" : "null"
     }
 
     testOptions {

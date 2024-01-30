@@ -23,6 +23,8 @@ import com.solana.mobilewalletadapter.walletlib.protocol.MobileWalletAdapterConf
 import com.solana.mobilewalletadapter.walletlib.scenario.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair
+import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
 import java.nio.charset.StandardCharsets
 
@@ -34,6 +36,8 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
     private var clientTrustUseCase: ClientTrustUseCase? = null
     private var scenario: LocalScenario? = null
+
+    private val walletIconUri = Uri.parse(application.getString(R.string.wallet_icon_uri))
 
     fun processLaunch(intent: Intent?, callingPackage: String?): Boolean {
         if (intent == null) {
@@ -114,10 +118,14 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
         viewModelScope.launch {
             if (authorized) {
-                val keypair = getApplication<MwalletApplication>().keyRepository.generateKeypair()
-                val publicKey = keypair.public as Ed25519PublicKeyParameters
-                Log.d(TAG, "Generated a new keypair (pub=${publicKey.encoded.contentToString()}) for authorize request")
-                val account = buildAccount(publicKey.encoded, "mwallet")
+                val publicKey = getKeypair().public as Ed25519PublicKeyParameters
+                val account = buildAccount(publicKey.encoded, "mwallet",
+                    chains = arrayOf(request.request.chain),
+                    features = arrayOf(
+                        ProtocolContract.FEATURE_ID_SIGN_TRANSACTIONS,
+                        ProtocolContract.FEATURE_ID_SIGN_IN_WITH_SOLANA
+                    )
+                )
                 request.request.completeWithAuthorize(account, BuildConfig.WALLET_URI_BASE,
                     request.sourceVerificationState.authorizationScope.encodeToByteArray(), null)
             } else {
@@ -138,7 +146,6 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
             if (authorizeSignIn) {
                 val keypair = getApplication<MwalletApplication>().keyRepository.generateKeypair()
                 val publicKey = keypair.public as Ed25519PublicKeyParameters
-                Log.d(TAG, "Generated a new keypair (pub=${publicKey.encoded.contentToString()}) for authorize request")
 
                 val address = Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP)
                 val siwsMessage = request.signInPayload.prepareMessage(address)
@@ -339,8 +346,8 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         }
     }
 
-    private fun buildAccount(publicKey: ByteArray, label: String, icon: Uri? = null,
-                             chains: Array<String>? = null, features: Array<String>? = null ) =
+    private fun buildAccount(publicKey: ByteArray, label: String, icon: Uri? = walletIconUri,
+                             chains: Array<String>? = null, features: Array<String>? = null) =
         AuthorizedAccount(
             publicKey, Base58.encodeToString(publicKey), "base58",
             label, icon, chains, features
@@ -358,6 +365,25 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
             ProtocolContract.CLUSTER_TESTNET ->
                 Uri.parse("https://api.testnet.solana.com")
             else -> throw IllegalArgumentException("Unsupported chain/cluster: $chainOrCluster")
+        }
+    }
+
+    private suspend fun getKeypair(): AsymmetricCipherKeyPair {
+        return BuildConfig.PRIVATE_KEY?.let { privateKey ->
+            val privateKeyRaw = Base64.decode(privateKey, Base64.NO_PADDING or Base64.NO_WRAP)
+            val privateKeyParams = Ed25519PrivateKeyParameters(privateKeyRaw, 0)
+            (getApplication<MwalletApplication>().keyRepository.getKeypair(privateKeyParams.generatePublicKey().encoded) ?:
+            AsymmetricCipherKeyPair(privateKeyParams.generatePublicKey(), privateKeyParams).also {
+                getApplication<MwalletApplication>().keyRepository.insertKeypair(it)
+            }).also {
+                val publicKey = it.public as Ed25519PublicKeyParameters
+                val address = Base58.encodeToString(publicKey.encoded)
+                Log.d(TAG, "Using local keypair (add=$address) for authorize request")
+            }
+        } ?: getApplication<MwalletApplication>().keyRepository.generateKeypair().also {
+            val publicKey = it.public as Ed25519PublicKeyParameters
+            val address = Base58.encodeToString(publicKey.encoded)
+            Log.d(TAG, "Generated a new keypair (add=$address) for authorize request")
         }
     }
 
