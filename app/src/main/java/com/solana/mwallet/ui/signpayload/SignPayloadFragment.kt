@@ -84,10 +84,21 @@ class SignPayloadFragment : Fragment() {
                                 return@collect
                             }
 
+                            if (request.request.identityUri?.isAbsolute == true &&
+                                request.request.iconRelativeUri?.isHierarchical == true
+                            ) {
+                                val uri = Uri.withAppendedPath(
+                                    request.request.identityUri!!,
+                                    request.request.iconRelativeUri!!.encodedPath
+                                )
+                                viewBinding.imageIcon.loadImage(uri.toString())
+                            }
+                            viewBinding.textName.text = request.request.identityName ?: "<no name>"
+
                             viewBinding.textSubtitle.setText(R.string.label_requesting_transactions)
 
                             viewBinding.btnApprove.setOnClickListener {
-                                activityViewModel.signAndSendTransactionsSimulateSign(request)
+                                activityViewModel.signAndSendTransactionsSign(request)
                             }
 
                             viewBinding.btnCancel.setOnClickListener {
