@@ -7,13 +7,24 @@ package com.solana.mwallet.usecase
 import android.net.Uri
 import android.util.Base64
 import android.util.Log
+import com.solana.networking.OkHttpNetworkDriver
+import com.solana.networking.Rpc20Driver
+import com.solana.rpccore.JsonRpc20Request
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
+import kotlinx.coroutines.withTimeout
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.addJsonArray
+import kotlinx.serialization.json.addJsonObject
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.put
+import okhttp3.OkHttpClient
 
 // Note: this class is for testing purposes only. It does not comprehensively check for error
 // results from the RPC server.
@@ -26,47 +37,34 @@ object SendTransactionsUseCase {
         commitment: String?,
         skipPreflight: Boolean?,
         maxRetries: Int?,
-        // TODO: wait for commitment to send next transaction
+        waitForCommitmentToSendNextTransaction: Boolean?
     ) {
         withContext(Dispatchers.IO) {
             // Send all transactions and accumulate transaction signatures
             val signatures = Array<String?>(transactions.size) { null }
-            // TODO: wait for commitment to send next transaction
+            val rpcClient = Rpc20Driver(rpcUri.toString(), OkHttpNetworkDriver(OkHttpClient()))
             transactions.forEachIndexed { i, transaction ->
                 val transactionBase64 = Base64.encodeToString(transaction, Base64.NO_WRAP)
                 Log.d(TAG, "Sending transaction: '$transactionBase64' with minContextSlot=$minContextSlot")
 
-                val conn = URL(rpcUri.toString()).openConnection() as HttpURLConnection
-                conn.requestMethod = "POST"
-                conn.setRequestProperty("Content-Type", "application/json")
-                conn.readTimeout = TIMEOUT_MS
-                conn.connectTimeout = TIMEOUT_MS
-                conn.doOutput = true
-                conn.outputStream.use { outputStream ->
-                    outputStream.write(
-                        createSendTransactionRequest(
-                            transactionBase64,
-                            minContextSlot,
-                            commitment,
-                            skipPreflight,
-                            maxRetries
-                        ).encodeToByteArray()
-                    )
-                }
-                conn.connect()
-                signatures[i] = if (conn.responseCode == HttpURLConnection.HTTP_OK) {
-                    val result = conn.inputStream.use { inputStream ->
-                        inputStream.readBytes()
-                    }
-                    try {
-                        parseSendTransactionResult(result)
-                    } catch (e: IllegalArgumentException) {
-                        Log.e(TAG, "sendTransaction did not return a signature, response=${String(result)}")
+                signatures[i] = rpcClient.makeRequest(
+                    SendTransactionRequest(transactionBase64,
+                        minContextSlot, commitment, skipPreflight, maxRetries).toJsonRpc20Request(),
+                    String.serializer()
+                ).run {
+                    error?.let {
+                        Log.e(TAG, "Failed sending transaction, response code=${it.code}")
+                        null
+                    } ?: result?.apply {
+                        if (waitForCommitmentToSendNextTransaction == true
+                            && !confirmTransactions(listOf(this), commitment ?: "processed", rpcClient)) {
+                            Log.e(TAG, "transaction confirmation failed (tx id: $this)")
+                            return@forEachIndexed
+                        }
+                    } ?: run {
+                        Log.e(TAG, "sendTransaction did not return a signature, response=${result}")
                         null
                     }
-                } else {
-                    Log.e(TAG, "Failed sending transaction, response code=${conn.responseCode}")
-                    null
                 }
             }
 
@@ -78,56 +76,107 @@ object SendTransactionsUseCase {
         }
     }
 
-    private fun createSendTransactionRequest(
+    suspend fun confirmTransactions(txids: List<String>, commitment: String, rpcClient: Rpc20Driver): Boolean =
+        withTimeout(TIMEOUT_MS.toLong()) {
+            suspend fun getStatuses() = rpcClient.makeRequest<SignatureStatusesResponse>(
+                SignatureStatusesRequest(txids).toJsonRpc20Request(),
+                SignatureStatusesResponse.serializer()
+            ).apply {
+                error?.let {
+                    throw Error("Could not retrieve transaction status: ${it.message}")
+                }
+            }.result
+
+            // wait for desired transaction status
+            var inc = 1L
+            while (true) {
+                val currentStatuses = getStatuses()?.value
+
+                if (currentStatuses?.any {
+                        it?.confirmationStatus.commitmentOrdinal < commitment.commitmentOrdinal
+                } == true) {
+                    // Exponential delay before retrying.
+                    delay(500 * inc)
+                } else {
+                    return@withTimeout true
+                }
+
+                // breakout after timeout
+                if (!isActive) break
+                inc++
+            }
+
+            return@withTimeout false
+        }
+
+    private val TAG = SendTransactionsUseCase::class.simpleName
+    private const val TIMEOUT_MS = 20000
+
+    private val String?.commitmentOrdinal: Int
+        get() = when(this) {
+            "processed" -> 0
+            "confirmed" -> 1
+            "finalized" -> 2
+            else -> -1
+        }
+
+    class SendTransactionRequest(
         transactionBase64: String,
         minContextSlot: Int?,
         commitment: String?,
         skipPreflight: Boolean?,
         maxRetries: Int?
-    ): String {
-        val jo = JSONObject()
-        jo.put("jsonrpc", "2.0")
-        jo.put("id", 1)
-        jo.put("method", "sendTransaction")
-
-        val arr = JSONArray()
-
-        // Parameter 0 - base64-encoded transaction
-        arr.put(transactionBase64)
-
-        // Parameter 1 - options
-        val opt = JSONObject()
-        opt.put("encoding", "base64")
-        opt.put("preflightCommitment", commitment ?: "processed")
-        if (minContextSlot != null) {
-            opt.put("minContextSlot", minContextSlot)
-        }
-        if (skipPreflight != null) {
-            opt.put("skipPreflight", skipPreflight)
-        }
-        if (maxRetries != null) {
-            opt.put("maxRetries", maxRetries)
-        }
-        arr.put(opt)
-
-        jo.put("params", arr)
-
-        return jo.toString()
+    ) : JsonRpc20Request("sendTransaction", id = "1",
+        params = buildJsonArray {
+            add(transactionBase64)
+            addJsonObject {
+                put("encoding", "base64")
+                put("preflightCommitment", commitment ?: "processed")
+                if (minContextSlot != null) {
+                    put("minContextSlot", minContextSlot)
+                }
+                if (skipPreflight != null) {
+                    put("skipPreflight", skipPreflight)
+                }
+                if (maxRetries != null) {
+                    put("maxRetries", maxRetries)
+                }
+            }
+        }) {
+        // TODO: update rpc-core once polymorphic serialization bug is fixed
+        fun toJsonRpc20Request() = JsonRpc20Request(method, params, id)
     }
 
-    private fun parseSendTransactionResult(result: ByteArray): String? {
-        val response = String(result)
-        return try {
-            val jo = JSONObject(response)
-            jo.getString("result")
-        } catch (e: JSONException) {
-            Log.e(TAG, "Response does not contain a result value, response=$response", e)
-            null
-        }
+    private fun SignatureStatusRequest(signatureBase64: String) =
+        SignatureStatusesRequest(listOf(signatureBase64))
+
+    class SignatureStatusesRequest(signatures: List<String>)
+        : JsonRpc20Request("getSignatureStatuses", id = "1",
+        params = buildJsonArray {
+            addJsonArray {
+                signatures.forEach { add(it) }
+            }
+            addJsonObject {
+                put("searchTransactionHistory", false)
+            }
+        }) {
+        // TODO: update rpc-core once polymorphic serialization bug is fixed
+        fun toJsonRpc20Request() = JsonRpc20Request(method, params, id)
     }
 
-    private val TAG = SendTransactionsUseCase::class.simpleName
-    private const val TIMEOUT_MS = 20000
+    @Serializable
+    class SignatureStatusesResponse(
+        val context: JsonElement?,
+        val value: List<SignatureStatus?>
+    )
+
+    @Serializable
+    class SignatureStatus(
+        val slot: ULong,
+        val confirmations: Int?,
+        @SerialName("err") val error: JsonElement?,
+        val confirmationStatus: String?
+    )
 
     class InvalidTransactionsException(val valid: BooleanArray, message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
 }
