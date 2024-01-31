@@ -65,22 +65,6 @@ android {
         }
     }
 
-    flavorDimensions = ["protocol_version"]
-
-    productFlavors {
-        v1 {
-            dimension "protocol_version"
-            buildConfigField "com.solana.mobilewalletadapter.common.protocol.SessionProperties.ProtocolVersion",
-                    "PROTOCOL_VERSION", "com.solana.mobilewalletadapter.common.protocol.SessionProperties.ProtocolVersion.V1"
-        }
-        legacy {
-            dimension "protocol_version"
-            resValue "string", "app_name", "MWA Wallet (Legacy)"
-            buildConfigField "com.solana.mobilewalletadapter.common.protocol.SessionProperties.ProtocolVersion",
-                    "PROTOCOL_VERSION", "com.solana.mobilewalletadapter.common.protocol.SessionProperties.ProtocolVersion.LEGACY"
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
