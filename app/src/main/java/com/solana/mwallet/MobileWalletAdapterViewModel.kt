@@ -224,7 +224,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                     SolanaSigningUseCase.signTransaction(payload, keypair)
                 } catch (e: IllegalArgumentException) {
                     Log.w(TAG, "not a valid Solana transaction", e)
-                    SolanaSigningUseCase.Result(byteArrayOf(), byteArrayOf())
+                    SolanaSigningUseCase.SigningResult(byteArrayOf(), byteArrayOf())
                 }
             }
 
@@ -271,7 +271,8 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                     request.request.minContextSlot,
                     request.request.commitment,
                     request.request.skipPreflight,
-                    request.request.maxRetries
+                    request.request.maxRetries,
+                    request.request.waitForCommitmentYoSendNExtTransaction
                 )
                 // TODO: await confirmation and update UI with progress
                 Log.d(TAG, "All transactions submitted via RPC")
