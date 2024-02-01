@@ -118,7 +118,7 @@ dependencies {
     implementation 'io.github.funkatronics:multimult:0.2.0'
     implementation 'com.solanamobile:digital-asset-links-android:1.0.3'
     implementation 'com.solanamobile:mobile-wallet-adapter-walletlib:2.0.1'
-    implementation 'com.solanamobile:rpc-core:0.2.4'
-    implementation 'com.solanamobile:rpc-okiodriver:0.2.4'
+    implementation 'com.solanamobile:rpc-core:0.2.5'
+    implementation 'com.solanamobile:rpc-okiodriver:0.2.5'
     implementation 'com.solanamobile:web3-solana:0.2.2'
 }
