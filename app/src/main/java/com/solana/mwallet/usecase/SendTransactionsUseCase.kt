@@ -49,7 +49,7 @@ object SendTransactionsUseCase {
 
                 signatures[i] = rpcClient.makeRequest(
                     SendTransactionRequest(transactionBase64,
-                        minContextSlot, commitment, skipPreflight, maxRetries).toJsonRpc20Request(),
+                        minContextSlot, commitment, skipPreflight, maxRetries),
                     String.serializer()
                 ).run {
                     error?.let {
@@ -79,8 +79,7 @@ object SendTransactionsUseCase {
     suspend fun confirmTransactions(txids: List<String>, commitment: String, rpcClient: Rpc20Driver): Boolean =
         withTimeout(TIMEOUT_MS.toLong()) {
             suspend fun getStatuses() = rpcClient.makeRequest<SignatureStatusesResponse>(
-                SignatureStatusesRequest(txids).toJsonRpc20Request(),
-                SignatureStatusesResponse.serializer()
+                SignatureStatusesRequest(txids), SignatureStatusesResponse.serializer()
             ).apply {
                 error?.let {
                     throw Error("Could not retrieve transaction status: ${it.message}")
@@ -120,7 +119,7 @@ object SendTransactionsUseCase {
             else -> -1
         }
 
-    class SendTransactionRequest(
+    /*package*/ class SendTransactionRequest(
         transactionBase64: String,
         minContextSlot: Int?,
         commitment: String?,
@@ -142,15 +141,12 @@ object SendTransactionsUseCase {
                     put("maxRetries", maxRetries)
                 }
             }
-        }) {
-        // TODO: update rpc-core once polymorphic serialization bug is fixed
-        fun toJsonRpc20Request() = JsonRpc20Request(method, params, id)
-    }
+        })
 
-    private fun SignatureStatusRequest(signatureBase64: String) =
+    /*package*/ fun SignatureStatusRequest(signatureBase64: String) =
         SignatureStatusesRequest(listOf(signatureBase64))
 
-    class SignatureStatusesRequest(signatures: List<String>)
+    /*package*/ class SignatureStatusesRequest(signatures: List<String>)
         : JsonRpc20Request("getSignatureStatuses", id = "1",
         params = buildJsonArray {
             addJsonArray {
@@ -159,24 +155,22 @@ object SendTransactionsUseCase {
             addJsonObject {
                 put("searchTransactionHistory", false)
             }
-        }) {
-        // TODO: update rpc-core once polymorphic serialization bug is fixed
-        fun toJsonRpc20Request() = JsonRpc20Request(method, params, id)
-    }
+        })
 
     @Serializable
-    class SignatureStatusesResponse(
+    /*package*/ class SignatureStatusesResponse(
         val context: JsonElement?,
         val value: List<SignatureStatus?>
     )
 
     @Serializable
-    class SignatureStatus(
+    /*package*/ class SignatureStatus(
         val slot: ULong,
         val confirmations: Int?,
         @SerialName("err") val error: JsonElement?,
         val confirmationStatus: String?
     )
 
-    class InvalidTransactionsException(val valid: BooleanArray, message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
+    /*package*/ class InvalidTransactionsException(val valid: BooleanArray,
+        message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
 }
