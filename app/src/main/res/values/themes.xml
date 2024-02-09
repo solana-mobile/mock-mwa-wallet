@@ -74,11 +74,11 @@
         <item name="android:textColor">@color/off_white</item>
         <item name="android:background">@drawable/button_secondary</item>
 
-        <item name="android:fontFamily">@font/inter_tight_semi_bold</item>
+        <item name="android:fontFamily">@font/inter_tight_medium</item>
         <item name="android:letterSpacing">0.001</item>
         <item name="android:minHeight">56dp</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="Theme.MwalletApp.Button.Outlined" parent="Theme.MwalletApp.Button">
@@ -90,6 +90,13 @@
         <item name="android:textColor">@color/grey_16</item>
         <item name="android:fontFamily">@font/inter_tight_semi_bold</item>
         <item name="android:letterSpacing">0.001</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="Theme.MwalletApp.Header2" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/grey_16</item>
+        <item name="android:fontFamily">@font/inter_tight_semi_bold</item>
+        <item name="android:letterSpacing">0.001</item>
         <item name="android:textSize">22sp</item>
     </style>
 
@@ -97,7 +104,7 @@
         <item name="android:textColor">@color/grey_55</item>
         <item name="android:fontFamily">@font/inter_tight_medium</item>
         <item name="android:letterSpacing">0.001</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>
