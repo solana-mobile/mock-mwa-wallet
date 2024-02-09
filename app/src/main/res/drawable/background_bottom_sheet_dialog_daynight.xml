@@ -3,11 +3,14 @@
   ~ Copyright (c) 2022 Solana Mobile Inc.
   -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <corners
-        android:topLeftRadius="?attr/dialogCornerRadius"
-        android:topRightRadius="?attr/dialogCornerRadius" />
-    <solid
-        android:color="?android:attr/colorBackground" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="4dp"
+        android:right="4dp"
+        android:bottom="4dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="?attr/dialogCornerRadius"/>
+            <solid android:color="?android:attr/colorBackground" />
+        </shape>
+    </item>
+</layer-list>

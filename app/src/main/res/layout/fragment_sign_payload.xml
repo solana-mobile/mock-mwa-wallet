@@ -8,8 +8,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="18dp"
-    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="12dp"
+    android:layout_marginHorizontal="20dp"
     android:paddingBottom="8dp"
     tools:context=".ui.signpayload.SignPayloadFragment">
 
@@ -17,7 +17,6 @@
         android:id="@+id/image_icon"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_margin="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:src="@android:drawable/ic_menu_report_image" />
@@ -26,7 +25,6 @@
         android:id="@+id/text_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         app:layout_constraintTop_toTopOf="@id/image_icon"
         app:layout_constraintBottom_toBottomOf="@id/image_icon"
         app:layout_constraintStart_toEndOf="@id/image_icon"
@@ -39,8 +37,6 @@
         android:id="@+id/text_subtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         app:layout_constraintTop_toBottomOf="@id/image_icon"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="18sp"
@@ -48,18 +44,25 @@
         android:fontFamily="@font/inter_tight_medium"
         tools:text="@string/label_requesting_transactions" />
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/off_white_dark"
+        app:layout_constraintTop_toBottomOf="@id/text_subtitle" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_cancel"
         style="@style/Theme.MwalletApp.Button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="48dp"
         app:layout_constraintEnd_toStartOf="@id/btn_approve"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_subtitle"
+        app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/label_cancel" />
 
@@ -68,7 +71,6 @@
         style="@style/Theme.MwalletApp.Button.Outlined"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         app:layout_constraintTop_toTopOf="@id/btn_cancel"
         app:layout_constraintBottom_toBottomOf="@id/btn_cancel"
         app:layout_constraintStart_toEndOf="@id/btn_cancel"

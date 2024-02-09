@@ -9,16 +9,15 @@
     android:id="@+id/authorize"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="18dp"
-    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="12dp"
+    android:layout_marginHorizontal="20dp"
     android:paddingBottom="8dp"
     tools:context=".ui.authorizedapp.AuthorizeDappFragment">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="8dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:src="@android:drawable/ic_menu_report_image" />
@@ -28,36 +27,50 @@
         style="@style/Theme.MwalletApp.Header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:layout_constraintTop_toTopOf="@id/image_icon"
-        app:layout_constraintBottom_toBottomOf="@id/image_icon"
-        app:layout_constraintStart_toEndOf="@id/image_icon"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/image_icon"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Awesome Dapp"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_subtitle"
+        style="@style/Theme.MwalletApp.Header2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_name"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/label_wants_to_connect" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_info"
         style="@style/Theme.MwalletApp.Subtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintTop_toBottomOf="@id/image_icon"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/text_subtitle"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="@string/label_wants_to_connect" />
+        android:text="You'll share your public address with this app." />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/off_white_dark"
+        app:layout_constraintTop_toBottomOf="@id/text_info" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_cancel"
         style="@style/Theme.MwalletApp.Button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="48dp"
         app:layout_constraintEnd_toStartOf="@id/btn_connect"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_subtitle"
+        app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/label_cancel" />
 
@@ -66,7 +79,6 @@
         style="@style/Theme.MwalletApp.Button.Outlined"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         app:layout_constraintTop_toTopOf="@id/btn_cancel"
         app:layout_constraintBottom_toBottomOf="@id/btn_cancel"
         app:layout_constraintStart_toEndOf="@id/btn_cancel"
