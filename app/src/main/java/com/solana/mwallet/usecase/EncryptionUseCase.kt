@@ -15,6 +15,8 @@ import javax.crypto.spec.IvParameterSpec
 object EncryptionUseCase {
     private val TAG = EncryptionUseCase::class.simpleName
     private const val KEY_NAME = "secret key name"
+    private const val KEY_VALIDITY_SECONDS = 180
+    private const val ENCRYPTED_PRIVATE_KEY_LENGTH_BYTES = 48
 
     fun encrypt(plaintextString: String): ByteArray =
         encrypt(plaintextString.toByteArray(Charset.defaultCharset()))
@@ -39,10 +41,13 @@ object EncryptionUseCase {
         // Exceptions are unhandled for getCipher() and getSecretKey().
         val cipher = getCipher()
         val secretKey = getSecretKey()
-        val ivParams = IvParameterSpec(encryptedBytes.sliceArray(48 until encryptedBytes.size))
+        val ivParams = IvParameterSpec(
+            encryptedBytes.sliceArray(ENCRYPTED_PRIVATE_KEY_LENGTH_BYTES until encryptedBytes.size))
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParams)
 
-        return cipher.doFinal(encryptedBytes.sliceArray(0 until 48)).also {
+        return cipher.doFinal(
+            encryptedBytes.sliceArray(0 until ENCRYPTED_PRIVATE_KEY_LENGTH_BYTES)
+        ).also {
             Log.d(TAG, "Decrypted information: ${it.decodeToString()}")
         }
     }
@@ -66,10 +71,10 @@ object EncryptionUseCase {
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                 .setUserAuthenticationRequired(true).apply {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        setUserAuthenticationParameters(300,
+                        setUserAuthenticationParameters(KEY_VALIDITY_SECONDS,
                             KeyProperties.AUTH_BIOMETRIC_STRONG or KeyProperties.AUTH_DEVICE_CREDENTIAL)
                     } else {
-                        setUserAuthenticationValidityDurationSeconds(300)
+                        setUserAuthenticationValidityDurationSeconds(KEY_VALIDITY_SECONDS)
                     }
                 }
                 .build()).run { getSecretKey() }
