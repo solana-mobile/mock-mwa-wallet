@@ -18,8 +18,6 @@ import com.solana.mwallet.MobileWalletAdapterViewModel
 import com.solana.mwallet.MobileWalletAdapterViewModel.MobileWalletAdapterServiceRequest
 import com.solana.mwallet.R
 import com.solana.mwallet.databinding.FragmentAssociateBinding
-import com.solana.mwallet.ui.authorizedapp.SignInFragment
-import com.solana.mwallet.ui.authorizedapp.SignInFragmentDirections
 import kotlinx.coroutines.launch
 
 class AssociateFragment : Fragment() {
@@ -49,8 +47,6 @@ class AssociateFragment : Fragment() {
                     }
 
                     when (request) {
-                        is MobileWalletAdapterServiceRequest.None ->
-                            Unit
                         is MobileWalletAdapterServiceRequest.AuthorizeDapp ->
                             navController.navigate(AssociateFragmentDirections.actionAuthorizeDapp())
                         is MobileWalletAdapterServiceRequest.SignIn ->
@@ -58,10 +54,10 @@ class AssociateFragment : Fragment() {
                         is MobileWalletAdapterServiceRequest.SignPayloads,
                         is MobileWalletAdapterServiceRequest.SignAndSendTransactions ->
                             navController.navigate(AssociateFragmentDirections.actionSignPayload())
-                        is MobileWalletAdapterServiceRequest.SessionTerminated ->
-                            Unit
-                        is MobileWalletAdapterServiceRequest.LowPowerNoConnection ->
-                            Unit
+                        is MobileWalletAdapterServiceRequest.None -> Unit
+                        is MobileWalletAdapterServiceRequest.SessionTerminated -> Unit
+                        is MobileWalletAdapterServiceRequest.LowPowerNoConnection -> Unit
+                        is MobileWalletAdapterServiceRequest.UserAuthenticationRequest -> Unit
                     }
                 }
             }
