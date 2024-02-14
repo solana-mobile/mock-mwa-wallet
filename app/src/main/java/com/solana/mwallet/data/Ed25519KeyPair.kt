@@ -19,13 +19,15 @@ internal data class Ed25519KeyPair(
     @ColumnInfo(
         name = "private key",
         typeAffinity = ColumnInfo.BLOB
-    ) @Size(PRIVATE_KEY_SIZE.toLong()) val privateKey: ByteArray
+    ) @Size(ENCRYPTED_PRIVATE_KEY_SIZE.toLong()) val encryptedPrivateKey: ByteArray
 ) {
     init {
-        require(privateKey.size == PRIVATE_KEY_SIZE) { "Invalid private key length" }
+        require(encryptedPrivateKey.size == ENCRYPTED_PRIVATE_KEY_SIZE) {
+            "Invalid private key length: ${encryptedPrivateKey.size}"
+        }
     }
 
     companion object {
-        const val PRIVATE_KEY_SIZE = 32
+        const val ENCRYPTED_PRIVATE_KEY_SIZE = 64
     }
 }

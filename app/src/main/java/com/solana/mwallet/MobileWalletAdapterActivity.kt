@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.solana.mwallet.MobileWalletAdapterViewModel.MobileWalletAdapterServiceRequest
+import com.solana.mwallet.usecase.UserAuthenticationUseCase
 import kotlinx.coroutines.launch
 
 class MobileWalletAdapterActivity : AppCompatActivity() {
@@ -33,7 +34,14 @@ class MobileWalletAdapterActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.mobileWalletAdapterServiceEvents.collect { request ->
-                    if (request is MobileWalletAdapterServiceRequest.SessionTerminated) {
+                    if (request is MobileWalletAdapterServiceRequest.UserAuthenticationRequest) {
+                        UserAuthenticationUseCase.authenticate(this@MobileWalletAdapterActivity) { result, error ->
+                            result?.let {
+                                request.future.complete(it)
+                            } ?: request.future.completeExceptionally(
+                                Exception(error?.let { "Authentication error: $it" } ?: "Authentication failed"))
+                        }
+                    } else if (request is MobileWalletAdapterServiceRequest.SessionTerminated) {
                         finish()
                     } else if (request is MobileWalletAdapterServiceRequest.LowPowerNoConnection) {
                         // should use dialog fragment, etc. but this is a quick demo

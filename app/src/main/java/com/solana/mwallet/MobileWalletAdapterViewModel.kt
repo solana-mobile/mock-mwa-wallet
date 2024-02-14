@@ -7,13 +7,17 @@ package com.solana.mwallet
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.security.keystore.UserNotAuthenticatedException
 import android.util.Base64
 import android.util.Log
+import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.funkatronics.encoders.Base58
 import com.solana.mobilewalletadapter.common.ProtocolContract
 import com.solana.mobilewalletadapter.common.signin.SignInWithSolana
+import com.solana.mobilewalletadapter.common.util.NotifyingCompletableFuture
 import com.solana.mwallet.usecase.*
 import com.solana.mobilewalletadapter.walletlib.association.AssociationUri
 import com.solana.mobilewalletadapter.walletlib.association.LocalAssociationUri
@@ -97,7 +101,10 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
         viewModelScope.launch {
             if (authorized) {
-                val publicKey = getKeypair().public as Ed25519PublicKeyParameters
+                val publicKey = getKeypairSafe().getOrElse {
+                    request.request.completeWithDecline()
+                    return@launch
+                }.public as Ed25519PublicKeyParameters
                 val account = buildAccount(publicKey.encoded, "mwallet",
                     chains = arrayOf(request.request.chain),
                     features = arrayOf(
@@ -105,7 +112,9 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                         ProtocolContract.FEATURE_ID_SIGN_IN_WITH_SOLANA
                     )
                 )
-                request.request.completeWithAuthorize(account, BuildConfig.WALLET_URI_BASE,
+                request.request.completeWithAuthorize(account,
+                    // Android 12 and up require verified links, which we don't have
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) BuildConfig.WALLET_URI_BASE else null,
                     request.sourceVerificationState.authorizationScope.encodeToByteArray(), null)
             } else {
                 request.request.completeWithDecline()
@@ -123,9 +132,11 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
         viewModelScope.launch {
             if (authorizeSignIn) {
-                val keypair = getApplication<MwalletApplication>().keyRepository.generateKeypair()
+                val keypair = getKeypairSafe().getOrElse {
+                    request.request.completeWithDecline()
+                    return@launch
+                }
                 val publicKey = keypair.public as Ed25519PublicKeyParameters
-
                 val address = Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP)
                 val siwsMessage = request.signInPayload.prepareMessage(address)
                 val signResult = try {
@@ -331,10 +342,13 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         return BuildConfig.PRIVATE_KEY?.let { privateKey ->
             val privateKeyRaw = Base64.decode(privateKey, Base64.NO_PADDING or Base64.NO_WRAP)
             val privateKeyParams = Ed25519PrivateKeyParameters(privateKeyRaw, 0)
-            (getApplication<MwalletApplication>().keyRepository.getKeypair(privateKeyParams.generatePublicKey().encoded) ?:
-            AsymmetricCipherKeyPair(privateKeyParams.generatePublicKey(), privateKeyParams).also {
-                getApplication<MwalletApplication>().keyRepository.insertKeypair(it)
-            }).also {
+            (getApplication<MwalletApplication>().keyRepository.getKeypair(privateKeyParams.generatePublicKey().encoded)
+                ?: AsymmetricCipherKeyPair(
+                    privateKeyParams.generatePublicKey(),
+                    privateKeyParams
+                ).also {
+                    getApplication<MwalletApplication>().keyRepository.insertKeypair(it)
+                }).also {
                 val publicKey = it.public as Ed25519PublicKeyParameters
                 val address = Base58.encodeToString(publicKey.encoded)
                 Log.d(TAG, "Using local keypair (add=$address) for authorize request")
@@ -345,6 +359,34 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
             Log.d(TAG, "Generated a new keypair (add=$address) for authorize request")
         }
     }
+
+    private suspend fun getKeypairSafe(): Result<AsymmetricCipherKeyPair> =
+        try {
+            Result.success(getKeypair())
+        } catch (e: UserNotAuthenticatedException) {
+            val future = NotifyingCompletableFuture<BiometricPrompt.AuthenticationResult>()
+            _mobileWalletAdapterServiceEvents.emit(MobileWalletAdapterServiceRequest.UserAuthenticationRequest(future))
+            future.runCatching {
+                withTimeout(USER_AUTHENTICATION_TIMEOUT_MS) {
+                    withContext(Dispatchers.IO) { get() }
+                    getKeypair()
+                }
+            }
+        }
+
+    private suspend fun <T> doThingWithAuthentication(thing: suspend () -> T): Result<T> =
+        try {
+            Result.success(thing())
+        } catch (e: UserNotAuthenticatedException) {
+            val future = NotifyingCompletableFuture<BiometricPrompt.AuthenticationResult>()
+            _mobileWalletAdapterServiceEvents.emit(MobileWalletAdapterServiceRequest.UserAuthenticationRequest(future))
+            future.runCatching {
+                withTimeout(USER_AUTHENTICATION_TIMEOUT_MS) {
+                    withContext(Dispatchers.IO) { get() }
+                    thing()
+                }
+            }
+        }
 
     private inner class MobileWalletAdapterScenarioCallbacks : LocalScenario.Callbacks {
         override fun onScenarioReady() = Unit
@@ -476,6 +518,9 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         object None : MobileWalletAdapterServiceRequest
         object SessionTerminated : MobileWalletAdapterServiceRequest
         object LowPowerNoConnection : MobileWalletAdapterServiceRequest
+        data class UserAuthenticationRequest(
+            val future: NotifyingCompletableFuture<BiometricPrompt.AuthenticationResult>
+        ) : MobileWalletAdapterServiceRequest
 
         sealed class MobileWalletAdapterRemoteRequest(open val request: ScenarioRequest) : MobileWalletAdapterServiceRequest
         sealed class AuthorizationRequest(
@@ -506,5 +551,6 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         private val TAG = MobileWalletAdapterViewModel::class.simpleName
         private const val SOURCE_VERIFICATION_TIMEOUT_MS = 3000L
         private const val LOW_POWER_NO_CONNECTION_TIMEOUT_MS = 3000L
+        private const val USER_AUTHENTICATION_TIMEOUT_MS = 3000L
     }
 }
