@@ -30,6 +30,7 @@
             android:launchMode="singleTask"
             android:taskAffinity="com.solana.mwallet.mwa_host_task"
             android:theme="@style/Theme.MwalletApp.BottomSheetDialog"
+            android:excludeFromRecents="true"
             android:exported="true">
             <!-- Custom wallet URI from a browser or native dapp -->
             <intent-filter android:order="2" android:autoVerify="true">
