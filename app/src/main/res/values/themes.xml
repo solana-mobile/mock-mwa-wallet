@@ -93,11 +93,12 @@
         <item name="android:textSize">28sp</item>
     </style>
 
-    <style name="Theme.MwalletApp.Header2" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/grey_16</item>
-        <item name="android:fontFamily">@font/inter_tight_semi_bold</item>
-        <item name="android:letterSpacing">0.001</item>
+    <style name="Theme.MwalletApp.Header2" parent="Theme.MwalletApp.Header">
         <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="Theme.MwalletApp.Header3" parent="Theme.MwalletApp.Header2">
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="Theme.MwalletApp.Subtitle" parent="TextAppearance.AppCompat">

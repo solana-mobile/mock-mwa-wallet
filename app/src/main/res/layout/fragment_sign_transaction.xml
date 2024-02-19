@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2024 Solana Mobile Inc.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="12dp"
+    android:layout_marginHorizontal="20dp"
+    android:paddingBottom="8dp"
+    tools:context=".ui.authorizedapp.AuthorizeDappFragment">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@android:drawable/ic_menu_report_image" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_name"
+        style="@style/Theme.MwalletApp.Header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/image_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Awesome Dapp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_subtitle"
+        style="@style/Theme.MwalletApp.Subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/label_sign_transactions" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_tx_details_title"
+        style="@style/Theme.MwalletApp.Header3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/text_subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Transaction Details" />
+
+    <View
+        android:id="@+id/divider_top"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/off_white_dark"
+        app:layout_constraintTop_toBottomOf="@id/text_tx_details_title" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_to_address_title"
+        style="@style/Theme.MwalletApp.Subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/divider_top"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/label_to_address"
+        android:textColor="@color/off_white_dark"
+        android:textSize="18sp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_to_address"
+        style="@style/Theme.MwalletApp.Subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/text_to_address_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="1234wxyz"
+        android:background="@drawable/background_grey_rounded_corners"
+        android:textColor="@color/grey_55"
+        android:textSize="18sp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_simulation_title"
+        style="@style/Theme.MwalletApp.Subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/text_to_address"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/label_simulation_results"
+        android:textColor="@color/off_white_dark"
+        android:textSize="18sp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_simulation"
+        style="@style/Theme.MwalletApp.Subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/text_simulation_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="+1000 SOL\n-1 USDC"
+        android:background="@drawable/background_grey_rounded_corners"
+        android:textColor="@color/grey_55"
+        android:textSize="18sp"
+        android:text="@string/label_sim_not_available"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_origin_title"
+        style="@style/Theme.MwalletApp.Subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/text_simulation"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/label_origin"
+        android:textColor="@color/off_white_dark"
+        android:textSize="18sp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_origin"
+        style="@style/Theme.MwalletApp.Subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/text_origin_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="awesomedapp.xyz"
+        android:background="@drawable/background_grey_rounded_corners"
+        android:textColor="@color/grey_55"
+        android:textSize="18sp"/>
+
+    <View
+        android:id="@+id/divider_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/off_white_dark"
+        app:layout_constraintTop_toBottomOf="@id/text_origin" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_cancel"
+        style="@style/Theme.MwalletApp.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="48dp"
+        app:layout_constraintEnd_toStartOf="@id/btn_approve"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/label_cancel" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_approve"
+        style="@style/Theme.MwalletApp.Button.Outlined"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/btn_cancel"
+        app:layout_constraintBottom_toBottomOf="@id/btn_cancel"
+        app:layout_constraintStart_toEndOf="@id/btn_cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/label_approve" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
