@@ -30,7 +30,9 @@ android {
         Properties properties = new Properties()
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
         def privateKey = properties.getProperty('privateKey')
+        def blowfishApiKey = properties.getProperty('blowfishApiKey')
         buildConfigField "String", "PRIVATE_KEY", privateKey ? "\"$privateKey\"" : "null"
+        buildConfigField "String", "BLOWFISH_API_KEY", blowfishApiKey ? "\"$blowfishApiKey\"" : "null"
     }
 
     testOptions {
@@ -122,4 +124,6 @@ dependencies {
     implementation 'com.solanamobile:rpc-core:0.2.5'
     implementation 'com.solanamobile:rpc-okiodriver:0.2.5'
     implementation 'com.solanamobile:web3-solana:0.2.2'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 }
