@@ -51,9 +51,11 @@ class AssociateFragment : Fragment() {
                             navController.navigate(AssociateFragmentDirections.actionAuthorizeDapp())
                         is MobileWalletAdapterServiceRequest.SignIn ->
                             navController.navigate(AssociateFragmentDirections.actionSignIn())
-                        is MobileWalletAdapterServiceRequest.SignPayloads,
-                        is MobileWalletAdapterServiceRequest.SignAndSendTransactions ->
+                        is MobileWalletAdapterServiceRequest.SignMessages ->
                             navController.navigate(AssociateFragmentDirections.actionSignPayload())
+                        is MobileWalletAdapterServiceRequest.SignTransactions,
+                        is MobileWalletAdapterServiceRequest.SignAndSendTransactions ->
+                            navController.navigate(AssociateFragmentDirections.actionSignTransaction())
                         is MobileWalletAdapterServiceRequest.None -> Unit
                         is MobileWalletAdapterServiceRequest.SessionTerminated -> Unit
                         is MobileWalletAdapterServiceRequest.LowPowerNoConnection -> Unit

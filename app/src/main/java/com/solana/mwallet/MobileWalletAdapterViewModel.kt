@@ -42,6 +42,11 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
     private val walletIconUri = Uri.parse(application.getString(R.string.wallet_icon_uri))
 
+    private val scanTransactionsUseCase = ScanTransactionsUseCase(
+        viewModelScope,
+        getApplication<MwalletApplication>().blowfishService
+    )
+
     fun processLaunch(intent: Intent?, callingPackage: String?): Boolean {
         if (intent == null) {
             Log.e(TAG, "No Intent available")
@@ -471,7 +476,27 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
         override fun onSignTransactionsRequest(request: SignTransactionsRequest) {
             if (verifyPrivilegedMethodSource(request)) {
-                cancelAndReplaceRequest(MobileWalletAdapterServiceRequest.SignTransactions(request))
+                val signTransactionsRequest =
+                    MobileWalletAdapterServiceRequest.SignTransactions(request,
+                        scanTransactionsUseCase.scanInProgress)
+                cancelAndReplaceRequest(signTransactionsRequest)
+
+                val scan = scanTransactionsUseCase.scanTransactionsAsync(request.chain,
+                    request.authorizedPublicKey, request.payloads.toList(), request.identityUri.toString())
+                viewModelScope.launch {
+                    // should we have a timeout on the scan result?
+//                    val scanState = withTimeoutOrNull(SOURCE_VERIFICATION_TIMEOUT_MS) {
+//                        scan.await()
+//                    } ?: scanTransactionsUseCase.scanTimedOut
+
+                    // TODO: blowfish recommends refreshing the scan every 5 seconds
+                    val scanState = scan.await()
+
+                    if (!updateExistingRequest(signTransactionsRequest,
+                            MobileWalletAdapterServiceRequest.SignTransactions(request, scanState))) {
+                        return@launch
+                    }
+                }
             } else {
                 request.completeWithDecline()
             }
@@ -488,7 +513,22 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         override fun onSignAndSendTransactionsRequest(request: SignAndSendTransactionsRequest) {
             if (verifyPrivilegedMethodSource(request)) {
                 val endpointUri = chainOrClusterToRpcUri(request.chain)
-                cancelAndReplaceRequest(MobileWalletAdapterServiceRequest.SignAndSendTransactions(request, endpointUri))
+                val signAndSendTransactionsRequest =
+                    MobileWalletAdapterServiceRequest.SignAndSendTransactions(request, endpointUri,
+                        scanTransactionsUseCase.scanInProgress)
+                cancelAndReplaceRequest(signAndSendTransactionsRequest)
+
+                val scan = scanTransactionsUseCase.scanTransactionsAsync(request.chain,
+                    request.publicKey, request.payloads.toList(), request.identityUri.toString())
+                viewModelScope.launch {
+                    // TODO: blowfish recommends refreshing the scan every 5 seconds
+                    val scanState = scan.await()
+
+                    if (!updateExistingRequest(signAndSendTransactionsRequest,
+                            MobileWalletAdapterServiceRequest.SignAndSendTransactions(request, endpointUri, scanState))) {
+                        return@launch
+                    }
+                }
             } else {
                 request.completeWithDecline()
             }
@@ -537,11 +577,15 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
             override val sourceVerificationState: ClientTrustUseCase.VerificationState
         ) : AuthorizationRequest(request, sourceVerificationState)
         sealed class SignPayloads(override val request: SignPayloadsRequest) : MobileWalletAdapterRemoteRequest(request)
-        data class SignTransactions(override val request: SignTransactionsRequest) : SignPayloads(request)
         data class SignMessages(override val request: SignMessagesRequest) : SignPayloads(request)
+        data class SignTransactions(
+            override val request: SignTransactionsRequest,
+            val txScanState: ScanTransactionsUseCase.TransactionScanState
+        ) : SignPayloads(request)
         data class SignAndSendTransactions(
             override val request: SignAndSendTransactionsRequest,
             val endpointUri: Uri,
+            val txScanState: ScanTransactionsUseCase.TransactionScanState,
             val signedTransactions: Array<ByteArray>? = null,
             val signatures: Array<ByteArray>? = null
         ) : MobileWalletAdapterRemoteRequest(request)
@@ -550,7 +594,8 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
     companion object {
         private val TAG = MobileWalletAdapterViewModel::class.simpleName
         private const val SOURCE_VERIFICATION_TIMEOUT_MS = 3000L
+        private const val TRANSACTION_SCAN_TIMEOUT_MS = 5000L
         private const val LOW_POWER_NO_CONNECTION_TIMEOUT_MS = 3000L
-        private const val USER_AUTHENTICATION_TIMEOUT_MS = 3000L
+        private const val USER_AUTHENTICATION_TIMEOUT_MS = 15000L
     }
 }

@@ -41,7 +41,7 @@ class SignPayloadFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 activityViewModel.mobileWalletAdapterServiceEvents.collect { request ->
                     when (request) {
-                        is MobileWalletAdapterServiceRequest.SignPayloads -> {
+                        is MobileWalletAdapterServiceRequest.SignMessages -> {
 
                             if (request.request.identityUri?.isAbsolute == true &&
                                 request.request.iconRelativeUri?.isHierarchical == true
@@ -53,21 +53,8 @@ class SignPayloadFragment : Fragment() {
                                 viewBinding.imageIcon.loadImage(uri.toString())
                             }
                             viewBinding.textName.text = request.request.identityName ?: "<no name>"
-
-                            val res =
-                                if (request is MobileWalletAdapterServiceRequest.SignTransactions) {
-                                    R.string.label_requesting_transactions
-                                } else {
-                                    R.string.label_sign_messages
-                                }
-                            viewBinding.textSubtitle.setText(res)
-
-                            if (request is MobileWalletAdapterServiceRequest.SignTransactions) {
-                                viewBinding.textMessageTitle.visibility = View.GONE
-                                viewBinding.textMessage.visibility = View.GONE
-                            } else {
-                                viewBinding.textMessage.text = request.request.payloads.first().decodeToString()
-                            }
+                            viewBinding.textSubtitle.setText(R.string.label_sign_messages)
+                            viewBinding.textMessage.text = request.request.payloads.first().decodeToString()
 
                             viewBinding.btnApprove.setOnClickListener {
                                 activityViewModel.signPayloadsSimulateSign(request)
@@ -75,34 +62,6 @@ class SignPayloadFragment : Fragment() {
 
                             viewBinding.btnCancel.setOnClickListener {
                                 activityViewModel.signPayloadsDeclined(request)
-                            }
-                        }
-                        is MobileWalletAdapterServiceRequest.SignAndSendTransactions -> {
-                            request.signatures?.run {
-                                // When signatures are present, move on to sending the transaction
-                                findNavController().navigate(SignPayloadFragmentDirections.actionSendTransaction())
-                                return@collect
-                            }
-
-                            if (request.request.identityUri?.isAbsolute == true &&
-                                request.request.iconRelativeUri?.isHierarchical == true
-                            ) {
-                                val uri = Uri.withAppendedPath(
-                                    request.request.identityUri!!,
-                                    request.request.iconRelativeUri!!.encodedPath
-                                )
-                                viewBinding.imageIcon.loadImage(uri.toString())
-                            }
-                            viewBinding.textName.text = request.request.identityName ?: "<no name>"
-
-                            viewBinding.textSubtitle.setText(R.string.label_requesting_transactions)
-
-                            viewBinding.btnApprove.setOnClickListener {
-                                activityViewModel.signAndSendTransactionsSign(request)
-                            }
-
-                            viewBinding.btnCancel.setOnClickListener {
-                                activityViewModel.signAndSendTransactionsDeclined(request)
                             }
                         }
                         else -> {
