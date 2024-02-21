@@ -80,7 +80,6 @@ class SignTransactionFragment : Fragment() {
                                 viewBinding.imageIcon.loadImage(uri.toString())
                             }
                             viewBinding.textName.text = request.request.identityName ?: "<no name>"
-                            viewBinding.textSubtitle.setText(R.string.label_requesting_transactions)
 
                             viewBinding.btnApprove.setOnClickListener {
                                 activityViewModel.signPayloadsSimulateSign(request)

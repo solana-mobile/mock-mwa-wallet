@@ -29,7 +29,6 @@ class ScanTransactionsUseCase(private val scope: CoroutineScope,
             else -> return CompletableDeferred(
                 NotScanable("Cannot simulate transactions, provided chain is invalid: $chain"))
         }
-        println("++++ cluster: $cluster")
         return scope.async(Dispatchers.IO) {
             try {
                 val result = blowfish.scanTransactions(
@@ -39,9 +38,7 @@ class ScanTransactionsUseCase(private val scope: CoroutineScope,
                         origin
                     ),
                     BuildConfig.BLOWFISH_API_KEY
-                ).apply {
-                    println("++++ response: $this")
-                }
+                )
                 TransactionScanSucceeded(result.summary)
             } catch (e: Exception) {
                 TransactionScanFailed(e.message.toString())

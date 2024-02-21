@@ -19,14 +19,7 @@ class MwalletApplication : Application() {
     val blowfishService: BlowfishEndpoints by lazy {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.blowfish.xyz/")
-            .client(
-                OkHttpClient.Builder()
-                .addInterceptor {
-                    it.proceed(it.request()).also {
-                        println("+++ okhttp response: ${it.peekBody(10000).string()}")
-                    }
-                }
-                .build())
+            .client(OkHttpClient())
             .addConverterFactory(BlowfishConverterFactory)
             .build()
 
