@@ -6,6 +6,9 @@ package com.solana.mwallet.ui.signpayload
 
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,16 +47,27 @@ class SignTransactionFragment : Fragment() {
                 activityViewModel.mobileWalletAdapterServiceEvents.collect { request ->
                     when (request) {
                         is MobileWalletAdapterServiceRequest.SignTransactions -> {
+
                             when (request.txScanState) {
                                 is ScanTransactionsUseCase.TransactionScanInProgress ->
-                                    viewBinding.textSimulation.text = "scanning transaction..."
+                                    viewBinding.textSimulation.text = getString(R.string.str_scanning_transaction)
                                 is ScanTransactionsUseCase.TransactionScanSucceeded ->
                                     viewBinding.textSimulation.text =
                                         request.txScanState.summary?.expectedStateChanges?.get(Base58.encodeToString(request.request.authorizedPublicKey))
-                                            ?.fold("") { acc, next -> acc + next.humanReadableDiff + "\n"}?.trim() ?: "no expected state changes"
+                                            ?.fold(SpannableStringBuilder()) { ssb, next -> ssb.apply {
+                                                val start = length
+                                                appendLine(next.humanReadableDiff)
+                                                val end = length
+                                                val color = requireContext().getColor(when (next.suggestedColor) {
+                                                    "CREDIT" -> R.color.green_700
+                                                    "DEBIT" -> android.R.color.holo_red_dark
+                                                    else -> R.color.grey_55
+                                                })
+                                                setSpan(ForegroundColorSpan(color), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                            } }?.trim() ?: getString(R.string.str_no_state_change)
                                 is ScanTransactionsUseCase.TransactionScanFailed,
                                 is ScanTransactionsUseCase.NotScanable ->
-                                    viewBinding.textSimulation.text = getString(R.string.label_sim_not_available)
+                                    viewBinding.textSimulation.text = getString(R.string.str_scanning_not_available)
                             }
 
                             if (request.request.identityUri?.isAbsolute == true &&

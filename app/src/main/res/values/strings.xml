@@ -29,10 +29,11 @@
     <!-- Sign Transaction fragment strings -->
     <string name="label_sign_transactions">is requesting a transaction</string>
     <string name="label_expected_changes">Expected Changes</string>
-    <string name="label_sim_not_available">\u26A0 transaction simulation not available</string>
-    <string name="label_to_address">to address</string>
-    <string name="label_simulation_results">simulation results</string>
-    <string name="label_origin">origin</string>
+
+    <!-- Transaction scanning states -->
+    <string name="str_scanning_transaction">scanning transaction…</string>
+    <string name="str_no_state_change">no expected state changes</string>
+    <string name="str_scanning_not_available">\u26A0 transaction simulation not available</string>
 
     <!-- Send Transaction fragment strings -->
     <string name="label_requesting_transactions">is requesting transaction(s)</string>
