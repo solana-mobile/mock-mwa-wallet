@@ -1,5 +1,6 @@
 package com.solana.mwallet.endpoints
 
+import com.solana.mwallet.BuildConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -76,6 +77,9 @@ object BlowfishConverterFactory : Converter.Factory() {
                     put("userAccount", it.userAccount)
                     putJsonObject("metadata") {
                         put("origin", it.origin)
+                    }
+                    if (BuildConfig.DEBUG) {
+                        put("simulateExpired", true)
                     }
                 }.toString().toRequestBody("application/json".toMediaType())
             }

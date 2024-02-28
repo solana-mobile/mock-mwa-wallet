@@ -26,6 +26,15 @@
     <string name="label_simulate_invalid_payloads">Simulate first payload invalid</string>
     <string name="label_simulate_too_many_payloads">Simulate too many payloads</string>
 
+    <!-- Sign Transaction fragment strings -->
+    <string name="label_sign_transactions">is requesting a transaction</string>
+    <string name="label_expected_changes">Expected Changes</string>
+
+    <!-- Transaction scanning states -->
+    <string name="str_scanning_transaction">scanning transaction…</string>
+    <string name="str_no_state_change">no expected state changes</string>
+    <string name="str_scanning_not_available">\u26A0 transaction simulation not available</string>
+
     <!-- Send Transaction fragment strings -->
     <string name="label_requesting_transactions">is requesting transaction(s)</string>
     <string name="label_send_transactions">Sending transaction(s)</string>
