@@ -15,7 +15,7 @@ import javax.crypto.spec.IvParameterSpec
 object EncryptionUseCase {
     private val TAG = EncryptionUseCase::class.simpleName
     private const val KEY_NAME = "secret key name"
-    private const val KEY_VALIDITY_SECONDS = 180
+    private const val KEY_VALIDITY_SECONDS = 900 // 15 minutes
     private const val ENCRYPTED_PRIVATE_KEY_LENGTH_BYTES = 48
 
     fun encrypt(plaintextString: String): ByteArray =
