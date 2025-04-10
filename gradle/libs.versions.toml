@@ -1,0 +1,82 @@
+[versions]
+# plugin versions
+androidGradlePlugin = "8.9.1"
+kotlinAndroidPlugin = "2.1.10"
+kotlinSerialization = "1.9.22"
+navigationSafeArgsGradlePlugin = "2.8.9"
+
+# library versions
+kotlin = "2.1.10"
+kotlinxCoroutines = "1.10.1"
+kotlinxSerialization = "1.6.3"
+
+androidxTest = "1.6.1"
+androidxTestRunner = "1.6.2"
+androidxTestOrchestrator = "1.5.1"
+androidxTestExtJUnit = "1.2.1"
+androidxTestEspresso = "3.6.1"
+androidxUiAutomator = "2.3.0"
+androidxLifecycle = "2.8.7"
+androidxRoom = "2.7.0"
+androidxActivity = "1.10.1"
+androidxAppCompat = "1.7.0"
+androidxBiometric = "1.1.0"
+androidxConstraintLayout = "2.2.1"
+androidxCore = "1.16.0"
+androidxNavigationFragment = "2.8.9"
+
+material = "1.12.0"
+coil = "2.7.0"
+bouncycastle = "1.80"
+multimult = "0.2.3"
+mwa = "2.0.7"
+digitalAssetLinks = "1.0.4"
+rpc = "0.2.5"
+web3 = "0.2.2"
+retrofit = "2.9.0"
+roomCompiler = "2.7.0"
+
+[libraries]
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTest" }
+androidx-test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "androidxTest" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+androidx-test-orchestrator = { group = "androidx.test", name = "orchestrator", version.ref = "androidxTestOrchestrator" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJUnit" }
+androidx-test-ext-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExtJUnit" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTest" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxTestEspresso" }
+androidx-ui-automator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "androidxUiAutomator" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidxBiometric" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidxNavigationFragment" }
+androidx-navigation-safeargs = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
+
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+coilSvg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
+bouncycastle = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
+multimult = { group = "io.github.funkatronics", name = "multimult", version.ref = "multimult" }
+mwa-clientlib = { group = "com.solanamobile", name = "mobile-wallet-adapter-clientlib", version.ref = "mwa" }
+mwa-walletlib = { group = "com.solanamobile", name = "mobile-wallet-adapter-walletlib", version.ref = "mwa" }
+digitalAssetLinks = { group = "com.solanamobile", name = "digital-asset-links-android", version.ref = "digitalAssetLinks" }
+rpc-core = { group = "com.solanamobile", name = "rpc-core", version.ref = "rpc" }
+rpc-okiodriver = { group = "com.solanamobile", name = "rpc-okiodriver", version.ref = "rpc" }
+web3-solana = { group = "com.solanamobile", name = "web3-solana", version.ref = "web3" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinAndroidPlugin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }

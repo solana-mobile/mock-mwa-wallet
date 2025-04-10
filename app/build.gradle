@@ -13,12 +13,12 @@ plugins {
 android {
     namespace = "com.solana.mwallet"
 
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.solana.mwallet"
         minSdk 23
-        targetSdk 34
+        targetSdk 35
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -80,50 +80,63 @@ android {
         viewBinding true
         buildConfig true
     }
+
+    packagingOptions {
+        exclude 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
+    }
 }
 
 dependencies {
-    androidTestImplementation 'androidx.test:runner:1.5.2'
-    androidTestUtil 'androidx.test:orchestrator:1.4.2'
+    // Android Test dependencies
+    androidTestUtil(libs.androidx.test.orchestrator)
+    androidTestImplementation(libs.kotlin.stdlib)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.core.ktx)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit.ktx)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.ui.automator)
 
-    androidTestImplementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
-    androidTestImplementation 'androidx.test:core:1.5.0'
-    androidTestImplementation 'androidx.test:core-ktx:1.5.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
-    androidTestImplementation 'androidx.test:runner:1.5.2'
-    androidTestImplementation 'androidx.test:rules:1.5.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation 'com.solanamobile:mobile-wallet-adapter-clientlib:2.0.1'
-    androidTestImplementation 'com.solanamobile:mobile-wallet-adapter-walletlib:2.0.1'
+    // Mobile Wallet Adapter Test dependencies
+    androidTestImplementation(libs.mwa.clientlib)
+    androidTestImplementation(libs.mwa.walletlib)
 
-    implementation 'androidx.activity:activity-ktx:1.8.2'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.biometric:biometric:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.6'
-    implementation 'androidx.room:room-runtime:2.6.1'
-    implementation 'androidx.room:room-ktx:2.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    // Core Android dependencies
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.biometric)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.material)
 
-    annotationProcessor 'androidx.room:room-compiler:2.6.1'
-    kapt 'androidx.room:room-compiler:2.6.1'
+    // Kotlin dependencies
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.serialization.json)
 
-    implementation 'io.coil-kt:coil:2.5.0'
-    implementation 'io.coil-kt:coil-svg:2.5.0'
-    implementation 'org.bouncycastle:bcprov-jdk18on:1.77'
-    implementation 'io.github.funkatronics:multimult:0.2.0'
-    implementation 'com.solanamobile:digital-asset-links-android:1.0.3'
-    implementation 'com.solanamobile:mobile-wallet-adapter-walletlib:2.0.1'
-    implementation 'com.solanamobile:rpc-core:0.2.5'
-    implementation 'com.solanamobile:rpc-okiodriver:0.2.5'
-    implementation 'com.solanamobile:web3-solana:0.2.2'
+    // Annotation processor and kapt plugins
+    annotationProcessor(libs.room.compiler)
+    kapt(libs.room.compiler)
 
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    // Coil for image loading
+    implementation(libs.coil)
+    implementation(libs.coilSvg)
+
+    // Additional dependencies
+    implementation(libs.bouncycastle)
+    implementation(libs.multimult)
+    implementation(libs.digitalAssetLinks)
+    implementation(libs.mwa.walletlib)
+    implementation(libs.rpc.core)
+    implementation(libs.rpc.okiodriver)
+    implementation(libs.web3.solana)
+
+    // Retrofit for networking
+    implementation(libs.retrofit)
 }
