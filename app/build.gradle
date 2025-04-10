@@ -80,6 +80,10 @@ android {
         viewBinding true
         buildConfig true
     }
+
+    packagingOptions {
+        exclude 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
+    }
 }
 
 dependencies {
