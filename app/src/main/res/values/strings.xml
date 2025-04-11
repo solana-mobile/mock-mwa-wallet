@@ -3,7 +3,7 @@
   -->
 
 <resources>
-    <string name="app_name">MWA Wallet</string>
+    <string name="app_name">Mock MWA Wallet</string>
 
     <!-- Main activity strings -->
     <string name="label_hello_world">I\'m a wallet!</string>
@@ -65,4 +65,11 @@
         work properly when the device battery save mode is active. Please turn off battery
         saver or plug in your phone and try again.
     </string>
+
+    <!-- Barcode Scanning -->
+    <string name="label_menu_qr_scan">Scan</string>
+    <string name="label_start_scanner">Start Scanner</string>
+    <string name="label_open_settings">Open Settings</string>
+    <string name="str_invalid_mwa_qr">Invalid QR!</string>
+    <string name="str_camera_permission_required">Camera permission is required!</string>
 </resources>

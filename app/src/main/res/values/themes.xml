@@ -18,6 +18,12 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Theme.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <!-- Option 1: Use included AppCompat Dialog theme  -->
     <style name="Theme.MwalletApp.BottomSheetDialog" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="windowActionBar">false</item>

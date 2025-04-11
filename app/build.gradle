@@ -3,11 +3,12 @@
  */
 
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.serialization'
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.serialization
+    alias libs.plugins.kotlin.compose
+    alias libs.plugins.koltin.ksp
     id 'androidx.navigation.safeargs.kotlin'
-    id 'kotlin-kapt'
 }
 
 android {
@@ -79,6 +80,7 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
     }
 
     packagingOptions {
@@ -87,56 +89,79 @@ android {
 }
 
 dependencies {
+    debugImplementation libs.androidx.ui.tooling
+    debugImplementation libs.androidx.ui.test.manifest
+
     // Android Test dependencies
-    androidTestUtil(libs.androidx.test.orchestrator)
-    androidTestImplementation(libs.kotlin.stdlib)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.core.ktx)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit.ktx)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.ui.automator)
+    androidTestUtil libs.androidx.test.orchestrator
+    androidTestImplementation libs.kotlin.stdlib
+    androidTestImplementation libs.androidx.test.core
+    androidTestImplementation libs.androidx.test.core.ktx
+    androidTestImplementation libs.androidx.test.ext.junit
+    androidTestImplementation libs.androidx.test.ext.junit.ktx
+    androidTestImplementation libs.androidx.test.runner
+    androidTestImplementation libs.androidx.test.rules
+    androidTestImplementation libs.androidx.test.espresso.core
+    androidTestImplementation libs.androidx.ui.automator
+    androidTestImplementation libs.androidx.ui.test.junit4
+    androidTestImplementation platform(libs.androidx.compose.bom)
 
     // Mobile Wallet Adapter Test dependencies
-    androidTestImplementation(libs.mwa.clientlib)
-    androidTestImplementation(libs.mwa.walletlib)
+    androidTestImplementation libs.mwa.clientlib
+    androidTestImplementation libs.mwa.walletlib
 
     // Core Android dependencies
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.biometric)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.material)
+    implementation libs.androidx.activity.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.biometric
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.ktx
+    implementation libs.material
+
+    // Compose
+    implementation libs.androidx.activity.compose
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.ui
+    implementation libs.androidx.ui.graphics
+    implementation libs.androidx.ui.tooling.preview
+    implementation libs.androidx.material3
+
+    // Camera
+    implementation libs.androidx.camera.camera2
+    implementation libs.androidx.camera.view
+    implementation libs.androidx.camera.lifecycle
+    implementation libs.androidx.camera.mlkit.vision
 
     // Kotlin dependencies
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.serialization.json)
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
+    implementation libs.kotlinx.serialization.json
 
     // Annotation processor and kapt plugins
-    annotationProcessor(libs.room.compiler)
-    kapt(libs.room.compiler)
+    annotationProcessor libs.room.compiler
+    ksp libs.room.compiler
 
     // Coil for image loading
-    implementation(libs.coil)
-    implementation(libs.coilSvg)
+    implementation libs.coil
+    implementation libs.coilSvg
 
     // Additional dependencies
-    implementation(libs.bouncycastle)
-    implementation(libs.multimult)
-    implementation(libs.digitalAssetLinks)
-    implementation(libs.mwa.walletlib)
-    implementation(libs.rpc.core)
-    implementation(libs.rpc.okiodriver)
-    implementation(libs.web3.solana)
+    implementation libs.bouncycastle
+    implementation libs.multimult
+    implementation libs.digitalAssetLinks
+    implementation libs.mwa.walletlib
+    implementation libs.rpc.core
+    implementation libs.rpc.okiodriver
+    implementation libs.web3.solana
+
+    // ML Kit barcode scanning
+    implementation libs.barcodeScanning
 
     // Retrofit for networking
-    implementation(libs.retrofit)
+    implementation libs.retrofit
 }

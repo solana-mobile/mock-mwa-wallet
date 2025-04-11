@@ -3,6 +3,7 @@
 androidGradlePlugin = "8.9.1"
 kotlinAndroidPlugin = "2.1.10"
 kotlinSerialization = "1.9.22"
+kotlinKsp = "2.1.10-1.0.31"
 navigationSafeArgsGradlePlugin = "2.8.9"
 
 # library versions
@@ -24,6 +25,7 @@ androidxBiometric = "1.1.0"
 androidxConstraintLayout = "2.2.1"
 androidxCore = "1.16.0"
 androidxNavigationFragment = "2.8.9"
+androidxCamera = "1.4.2"
 
 material = "1.12.0"
 coil = "2.7.0"
@@ -35,9 +37,13 @@ rpc = "0.2.5"
 web3 = "0.2.2"
 retrofit = "2.9.0"
 roomCompiler = "2.7.0"
+barcodeScanning = "17.3.0"
+activityCompose = "1.10.1"
+composeBom = "2025.04.00"
 
 [libraries]
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
@@ -60,7 +66,11 @@ androidx-biometric = { group = "androidx.biometric", name = "biometric", version
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidxNavigationFragment" }
-androidx-navigation-safeargs = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
+androidx-navigation-safeargs = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "androidxCamera" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "androidxCamera" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "androidxCamera" }
+androidx-camera-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision", version.ref = "androidxCamera" }
 
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
@@ -75,8 +85,21 @@ rpc-okiodriver = { group = "com.solanamobile", name = "rpc-okiodriver", version.
 web3-solana = { group = "com.solanamobile", name = "web3-solana", version.ref = "web3" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+barcodeScanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "barcodeScanning" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinAndroidPlugin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinAndroidPlugin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
+koltin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKsp" }
+

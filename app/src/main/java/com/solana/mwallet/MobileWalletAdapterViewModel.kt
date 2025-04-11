@@ -38,7 +38,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         _mobileWalletAdapterServiceEvents.asSharedFlow() // expose as event stream, rather than a stateful object
 
     private var clientTrustUseCase: ClientTrustUseCase? = null
-    private var scenario: LocalScenario? = null
+    private var scenario: Scenario? = null
 
     private val walletIconUri = Uri.parse(application.getString(R.string.wallet_icon_uri))
 
@@ -59,9 +59,6 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         val associationUri = intent.data?.let { uri -> AssociationUri.parse(uri) }
         if (associationUri == null) {
             Log.e(TAG, "Unsupported association URI '${intent.data}'")
-            return false
-        } else if (associationUri !is LocalAssociationUri) {
-            Log.w(TAG, "Current implementation of mwallet does not support remote clients")
             return false
         }
 

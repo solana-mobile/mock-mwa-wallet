@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2022 Solana Mobile Inc.
-  -->
-
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:name=".MwalletApplication"
@@ -14,45 +14,65 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MwalletApp">
-
+        android:theme="@style/Theme.MwalletApp" >
+        <activity
+            android:name=".BarcodeScannerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MwalletApp" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MobileWalletAdapterActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
             android:launchMode="singleTask"
             android:taskAffinity="com.solana.mwallet.mwa_host_task"
-            android:theme="@style/Theme.MwalletApp.BottomSheetDialog"
+            android:theme="@style/Theme.MwalletApp.BottomSheetDialog" >
+        </activity>
+        <activity
+            android:name=".MobileWalletAdapterIntentHandlerActivity"
             android:excludeFromRecents="true"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.solana.mwallet.mwa_host_task"
+            android:theme="@style/Theme.Transparent" >
+
             <!-- Custom wallet URI from a browser or native dapp -->
-            <intent-filter android:order="2" android:autoVerify="true">
+            <intent-filter
+                android:autoVerify="true"
+                android:order="2" >
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https"/>
-                <data android:host="${walletUriHost}"/>
-                <data android:pathPrefix="${walletUriPath}"/>
+
+                <data android:scheme="https" />
+                <data android:host="${walletUriHost}" />
+                <data android:pathPrefix="${walletUriPath}" />
             </intent-filter>
             <!-- Default solana-wallet URI from a browser or native dapp -->
-            <intent-filter android:order="1">
+            <intent-filter android:order="1" >
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="solana-wallet" />
             </intent-filter>
             <!-- Any other uncategorized solana-wallet URI not covered by above -->
-            <intent-filter android:order="0">
+            <intent-filter android:order="0" >
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="solana-wallet" />
             </intent-filter>
         </activity>
     </application>
+
 </manifest>
