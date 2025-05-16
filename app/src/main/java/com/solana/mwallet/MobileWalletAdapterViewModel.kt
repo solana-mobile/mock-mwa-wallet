@@ -138,8 +138,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                     return@launch
                 }
                 val publicKey = keypair.public as Ed25519PublicKeyParameters
-                val address = Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP)
-                val siwsMessage = request.signInPayload.prepareMessage(address)
+                val siwsMessage = request.signInPayload.prepareMessage(publicKey.encoded)
                 val signResult = try {
                     val messageBytes = siwsMessage.encodeToByteArray()
                     SolanaSigningUseCase.signMessage(messageBytes, keypair)
