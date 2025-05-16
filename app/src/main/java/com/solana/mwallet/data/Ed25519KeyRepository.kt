@@ -59,6 +59,20 @@ class Ed25519KeyRepository(private val application: Application) {
         }
     }
 
+    // TODO: This function grabs the first keypair in the database. Add a way for the user to
+    //  select an account from the list of public keys in the database
+    suspend fun getExistingKeypair(): AsymmetricCipherKeyPair? {
+        return withContext(Dispatchers.IO) {
+            db.keysDao().getAllPublicKeysBase64().firstOrNull()?.let { publicKeyBase64 ->
+                db.keysDao().get(publicKeyBase64)?.let { keypair ->
+                    val privateKey = EncryptionUseCase.decrypt(keypair.encryptedPrivateKey)
+                    val privateKeyParams = Ed25519PrivateKeyParameters(privateKey, 0)
+                    AsymmetricCipherKeyPair(privateKeyParams.generatePublicKey(), privateKeyParams)
+                }
+            }
+        }
+    }
+
     companion object {
         private val TAG = Ed25519KeyRepository::class.simpleName
     }
