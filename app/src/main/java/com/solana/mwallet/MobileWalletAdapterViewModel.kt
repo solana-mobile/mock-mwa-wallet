@@ -340,7 +340,11 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
     private suspend fun getKeypair(): AsymmetricCipherKeyPair {
         // Try to get an existing keypair
-        return getApplication<MwalletApplication>().keyRepository.getExistingKeypair() ?:
+        return getApplication<MwalletApplication>().keyRepository.getExistingKeypair()?.also {
+            val publicKey = it.public as Ed25519PublicKeyParameters
+            val address = Base58.encodeToString(publicKey.encoded)
+            Log.d(TAG, "Using existing keypair (add=$address) for authorize request")
+        } ?:
         // no existing keypair, check if one was provided through local props
         BuildConfig.PRIVATE_KEY?.let { privateKey ->
             val privateKeyRaw = try {
