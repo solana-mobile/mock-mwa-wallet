@@ -20,7 +20,6 @@ import com.solana.mobilewalletadapter.common.signin.SignInWithSolana
 import com.solana.mobilewalletadapter.common.util.NotifyingCompletableFuture
 import com.solana.mwallet.usecase.*
 import com.solana.mobilewalletadapter.walletlib.association.AssociationUri
-import com.solana.mobilewalletadapter.walletlib.association.LocalAssociationUri
 import com.solana.mobilewalletadapter.walletlib.authorization.AuthIssuerConfig
 import com.solana.mobilewalletadapter.walletlib.protocol.MobileWalletAdapterConfig
 import com.solana.mobilewalletadapter.walletlib.scenario.*
@@ -139,8 +138,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                     return@launch
                 }
                 val publicKey = keypair.public as Ed25519PublicKeyParameters
-                val address = Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP)
-                val siwsMessage = request.signInPayload.prepareMessage(address)
+                val siwsMessage = request.signInPayload.prepareMessage(publicKey.encoded)
                 val signResult = try {
                     val messageBytes = siwsMessage.encodeToByteArray()
                     SolanaSigningUseCase.signMessage(messageBytes, keypair)
@@ -341,8 +339,21 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
     }
 
     private suspend fun getKeypair(): AsymmetricCipherKeyPair {
-        return BuildConfig.PRIVATE_KEY?.let { privateKey ->
-            val privateKeyRaw = Base64.decode(privateKey, Base64.NO_PADDING or Base64.NO_WRAP)
+        // Try to get an existing keypair
+        return getApplication<MwalletApplication>().keyRepository.getExistingKeypair()?.also {
+            val publicKey = it.public as Ed25519PublicKeyParameters
+            val address = Base58.encodeToString(publicKey.encoded)
+            Log.d(TAG, "Using existing keypair (add=$address) for authorize request")
+        } ?:
+        // no existing keypair, check if one was provided through local props
+        BuildConfig.PRIVATE_KEY?.let { privateKey ->
+            val privateKeyRaw = try {
+                Base64.decode(privateKey, Base64.NO_PADDING or Base64.NO_WRAP)
+            } catch (_: IllegalArgumentException) {
+                try { Base58.decode(privateKey) } catch (_: Error) {
+                    throw IllegalArgumentException("could not decode provided private key from local props")
+                }
+            }
             val privateKeyParams = Ed25519PrivateKeyParameters(privateKeyRaw, 0)
             (getApplication<MwalletApplication>().keyRepository.getKeypair(privateKeyParams.generatePublicKey().encoded)
                 ?: AsymmetricCipherKeyPair(
@@ -355,7 +366,8 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                 val address = Base58.encodeToString(publicKey.encoded)
                 Log.d(TAG, "Using local keypair (add=$address) for authorize request")
             }
-        } ?: getApplication<MwalletApplication>().keyRepository.generateKeypair().also {
+        } ?: // no existing or injected keypair, generate a new one
+        getApplication<MwalletApplication>().keyRepository.generateKeypair().also {
             val publicKey = it.public as Ed25519PublicKeyParameters
             val address = Base58.encodeToString(publicKey.encoded)
             Log.d(TAG, "Generated a new keypair (add=$address) for authorize request")
