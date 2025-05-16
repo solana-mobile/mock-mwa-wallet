@@ -339,16 +339,11 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
     }
 
     private suspend fun getKeypair(): AsymmetricCipherKeyPair {
-        // Try to get an existing keypair
-        return getApplication<MwalletApplication>().keyRepository.getExistingKeypair()?.also {
-            val publicKey = it.public as Ed25519PublicKeyParameters
-            val address = Base58.encodeToString(publicKey.encoded)
-            Log.d(TAG, "Using existing keypair (add=$address) for authorize request")
-        } ?:
-        // no existing keypair, check if one was provided through local props
-        BuildConfig.PRIVATE_KEY?.let { privateKey ->
+        // first check if a private key was provided through local props
+        return BuildConfig.PRIVATE_KEY?.let { privateKey ->
             val privateKeyRaw = try {
-                Base64.decode(privateKey, Base64.NO_PADDING or Base64.NO_WRAP)
+                val standardBase64NoPadding = privateKey.replace("-", "+").replace("_", "/").trimEnd('=')
+                Base64.decode(standardBase64NoPadding, Base64.NO_PADDING or Base64.NO_WRAP)
             } catch (_: IllegalArgumentException) {
                 try { Base58.decode(privateKey) } catch (_: Error) {
                     throw IllegalArgumentException("could not decode provided private key from local props")
@@ -366,6 +361,11 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                 val address = Base58.encodeToString(publicKey.encoded)
                 Log.d(TAG, "Using local keypair (add=$address) for authorize request")
             }
+        } ?: // check if there is an existing keypair
+        getApplication<MwalletApplication>().keyRepository.getExistingKeypair()?.also {
+            val publicKey = it.public as Ed25519PublicKeyParameters
+            val address = Base58.encodeToString(publicKey.encoded)
+            Log.d(TAG, "Using existing keypair (add=$address) for authorize request")
         } ?: // no existing or injected keypair, generate a new one
         getApplication<MwalletApplication>().keyRepository.generateKeypair().also {
             val publicKey = it.public as Ed25519PublicKeyParameters
