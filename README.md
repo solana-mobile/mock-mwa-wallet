@@ -33,7 +33,7 @@ git clone https://github.com/solana-mobile/mock-mwa-wallet.git
 
 1. Install Mock MWA Wallet on an Android device or emulator
 2. In the wallet, press the `Authenticate` button to enable wallet signing for 15 minutes.
-3. In your app, install the MWA Client SDK and invoke the MWA `authorize` method.
+3. In your app, install the [MWA Client SDK](https://docs.solanamobile.com/mobile-wallet-adapter/mobile-apps) and invoke the MWA `authorize` method.
 4. Once invoked, Mock MWA Wallet will be discovered as a compatible wallet option.
 
 ## Usage guide
