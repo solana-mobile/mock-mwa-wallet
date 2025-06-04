@@ -58,8 +58,10 @@ This should be a private key that is strictly used for development purposes.
 
 ### Authenticating on an emulator
 
-You can add Device Authentication on an emulator, just like on a physical device.
+You can add Device Authentication on an emulator, just like on a physical device. 
+- On your emulator go to the Settings app 
+- Search for `Fingerprint` or `Pin Code` settings page
+- Follow the standard setup instructions. 
+- If using fingerprint, your emulator settings (through Android Studio) can simulate a fingerprint.
 
-In general, you can go to the Settings app and search for `Fingerprint` or `Pin Code` then follow setup instructions. 
-
-The emulator allows you to simulate a fingerprint in settings, for example, with the Pixel 9 Pro Emulator:
+<img src="./images/emulator-fingerprint.png" />
