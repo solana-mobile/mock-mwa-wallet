@@ -63,6 +63,8 @@ class MobileWalletAdapterActivity : AppCompatActivity() {
             Log.w(TAG, "Invalid launch intent; finishing activity")
             finish()
             return
+        } else {
+            Log.d("MWA Remote Log - MWA Activity", "Successfully processed launch intent: ${intent.data}")
         }
     }
 

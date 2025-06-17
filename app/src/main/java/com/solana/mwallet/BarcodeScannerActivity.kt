@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,7 +18,6 @@ import androidx.camera.mlkit.vision.MlKitAnalyzer
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,10 +56,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.funkatronics.encoders.Base64
+import com.funkatronics.multibase.MultiBase
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.solana.mobilewalletadapter.walletlib.association.AssociationUri
+import com.solana.mobilewalletadapter.walletlib.association.RemoteAssociationUri
 import com.solana.mwallet.ui.theme.Lilac400
 import com.solana.mwallet.ui.theme.OffWhite
 import kotlinx.coroutines.CoroutineScope
@@ -86,8 +89,13 @@ class BarcodeScannerActivity : ComponentActivity() {
             Box(modifier = Modifier.fillMaxSize()) {
                 if (permissionGranted) {
                     BarcodeScanner { uri ->
+                        Log.d("MWA Remote Log - QR Scanner", "QR Scanner returned uri: $uri")
                         runCatching {
                             val mwaUri = AssociationUri.parse(uri)!!
+                            Log.d("MWA Remote Log - QR Scanner", "Successfully parsed MWA uri, association key: ${Base64.getUrlEncoder(true).encodeToString(mwaUri.associationPublicKey)}")
+                            if (mwaUri is RemoteAssociationUri) {
+                                Log.d("MWA Remote Log - QR Scanner", "remote reflector id: ${Base64.getUrlEncoder(true).encodeToString(mwaUri.reflectorIdBytes)} (${mwaUri.reflectorIdBytes.contentToString()})")
+                            }
                             startActivity(
                                 Intent(
                                     applicationContext,
