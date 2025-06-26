@@ -44,10 +44,10 @@ By default, Mock MWA Wallet will generate a random keypair for usage when it is 
 
 In `mock-mwa-wallet/local.properties`, you can configure the wallet to initialize with a given Ed25519 private key.
 
-1. In `local.properties` add a base64 encoded private key string:
+1. In `local.properties` add a base58 or base64 encoded private key string:
 
 ```
-privateKey=<BASE64_ENCODED_PRIVATE_KEY_STRING> 
+privateKey=<BASE58_OR_BASE64_ENCODED_PRIVATE_KEY_STRING> 
 ```
 
 This should be a private key that is strictly used for development purposes.
