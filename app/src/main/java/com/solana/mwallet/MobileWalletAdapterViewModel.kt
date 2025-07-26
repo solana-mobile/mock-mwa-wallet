@@ -183,7 +183,7 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                     }
                 is MobileWalletAdapterServiceRequest.SignMessages ->
                     Array(request.request.payloads.size) { i ->
-                        SolanaSigningUseCase.signMessage(request.request.payloads[i], keypair).signedPayload
+                        SolanaSigningUseCase.signMessage(request.request.payloads[i], keypair).signature
                     }
             }
 
