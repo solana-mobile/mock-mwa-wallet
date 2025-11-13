@@ -63,6 +63,9 @@ class SignInFragment : Fragment() {
 //                            viewBinding.textMessage.text = request.signInPayload.prepareMessage()
                             viewBinding.textMessage.text = "Sign in with your Solana Account: 1234wxyz"
                         }
+                        is MobileWalletAdapterServiceRequest.UserAuthenticationRequest -> {
+                            // Ignore - biometric prompt is being shown, don't navigate away
+                        }
                         else -> {
                             this@SignInFragment.request = null
                             // If several events are emitted back-to-back (e.g. during session
