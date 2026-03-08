@@ -7,6 +7,15 @@
 
     <!-- Main activity strings -->
     <string name="label_hello_world">I\'m a wallet!</string>
+    <string name="label_copy">Copy</string>
+    <string name="label_network">Network:</string>
+    <string name="label_balance">Balance:</string>
+    <string name="label_copied">Address copied</string>
+    <string name="label_balance_loading">…</string>
+    <string name="label_balance_error">—</string>
+    <string name="network_devnet">Devnet</string>
+    <string name="network_mainnet">Mainnet</string>
+    <string name="network_testnet">Testnet</string>
 
     <!-- Authorize dapp fragment strings -->
     <string name="label_authorize_dapp">Authorize dapp</string>
