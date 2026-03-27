@@ -58,6 +58,9 @@ class AuthorizeDappFragment : Fragment() {
                             }
                             viewBinding.textName.text = request.request.identityName ?: "<no name>"
                         }
+                        is MobileWalletAdapterServiceRequest.UserAuthenticationRequest -> {
+                            // Ignore - biometric prompt is being shown, don't navigate away
+                        }
                         else -> {
                             this@AuthorizeDappFragment.request = null
                             // If several events are emitted back-to-back (e.g. during session
