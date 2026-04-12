@@ -96,16 +96,23 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         request: MobileWalletAdapterServiceRequest.AuthorizationRequest,
         authorized: Boolean
     ) {
-        if (rejectStaleRequest(request)) {
-            return
-        }
-
         viewModelScope.launch {
             if (authorized) {
+                Log.d(TAG, "authorizeDapp: Starting authorization, request=$request")
                 val publicKey = getKeypairSafe().getOrElse {
+                    Log.w(TAG, "authorizeDapp: Failed to get keypair")
+                    // Clear state - authentication failed
+                    val currentRequest = _mobileWalletAdapterServiceEvents.value
+                    if (currentRequest is MobileWalletAdapterServiceRequest.AuthorizationRequest &&
+                        currentRequest.request === request.request) {
+                        rejectStaleRequest(currentRequest)
+                    } else {
+                        _mobileWalletAdapterServiceEvents.value = MobileWalletAdapterServiceRequest.None
+                    }
                     request.request.completeWithDecline()
                     return@launch
                 }.public as Ed25519PublicKeyParameters
+                Log.d(TAG, "authorizeDapp: Got keypair successfully")
                 val account = buildAccount(publicKey.encoded, "mwallet",
                     chains = arrayOf(request.request.chain),
                     features = arrayOf(
@@ -113,11 +120,28 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                         ProtocolContract.FEATURE_ID_SIGN_IN_WITH_SOLANA
                     )
                 )
+                // Get the current request from state (may have been updated by verification callback)
+                val currentRequest = _mobileWalletAdapterServiceEvents.value
+                if (currentRequest is MobileWalletAdapterServiceRequest.AuthorizationRequest &&
+                    currentRequest.request === request.request) {
+                    rejectStaleRequest(currentRequest)
+                } else {
+                    Log.w(TAG, "authorizeDapp: Current request changed, clearing anyway")
+                    _mobileWalletAdapterServiceEvents.value = MobileWalletAdapterServiceRequest.None
+                }
                 request.request.completeWithAuthorize(account,
                     // Android 12 and up require verified links, which we don't have
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) BuildConfig.WALLET_URI_BASE else null,
                     request.sourceVerificationState.authorizationScope.encodeToByteArray(), null)
             } else {
+                val currentRequest = _mobileWalletAdapterServiceEvents.value
+                if (currentRequest is MobileWalletAdapterServiceRequest.AuthorizationRequest &&
+                    currentRequest.request === request.request) {
+                    rejectStaleRequest(currentRequest)
+                } else {
+                    Log.w(TAG, "authorizeDapp: Current request changed during decline, clearing anyway")
+                    _mobileWalletAdapterServiceEvents.value = MobileWalletAdapterServiceRequest.None
+                }
                 request.request.completeWithDecline()
             }
         }
@@ -127,13 +151,18 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         request: MobileWalletAdapterServiceRequest.SignIn,
         authorizeSignIn: Boolean
     ) {
-        if (rejectStaleRequest(request)) {
-            return
-        }
-
         viewModelScope.launch {
             if (authorizeSignIn) {
                 val keypair = getKeypairSafe().getOrElse {
+                    Log.w(TAG, "signIn: Failed to get keypair")
+                    // Clear state - authentication failed
+                    val currentRequest = _mobileWalletAdapterServiceEvents.value
+                    if (currentRequest is MobileWalletAdapterServiceRequest.SignIn &&
+                        currentRequest.request === request.request) {
+                        rejectStaleRequest(currentRequest)
+                    } else {
+                        _mobileWalletAdapterServiceEvents.value = MobileWalletAdapterServiceRequest.None
+                    }
                     request.request.completeWithDecline()
                     return@launch
                 }
@@ -144,6 +173,13 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                     SolanaSigningUseCase.signMessage(messageBytes, keypair)
                 } catch (e: IllegalArgumentException) {
                     Log.w(TAG, "failed to sign SIWS payload", e)
+                    val currentRequest = _mobileWalletAdapterServiceEvents.value
+                    if (currentRequest is MobileWalletAdapterServiceRequest.SignIn &&
+                        currentRequest.request === request.request) {
+                        rejectStaleRequest(currentRequest)
+                    } else {
+                        _mobileWalletAdapterServiceEvents.value = MobileWalletAdapterServiceRequest.None
+                    }
                     request.request.completeWithInternalError(e)
                     return@launch
                 }
@@ -152,9 +188,26 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
                     siwsMessage.encodeToByteArray(), signResult.signature, "ed25519")
 
                 val account = buildAccount(publicKey.encoded, "mwallet")
+                // Get the current request from state (may have been updated by verification callback)
+                val currentRequest = _mobileWalletAdapterServiceEvents.value
+                if (currentRequest is MobileWalletAdapterServiceRequest.SignIn &&
+                    currentRequest.request === request.request) {
+                    rejectStaleRequest(currentRequest)
+                } else {
+                    Log.w(TAG, "signIn: Current request changed, clearing anyway")
+                    _mobileWalletAdapterServiceEvents.value = MobileWalletAdapterServiceRequest.None
+                }
                 request.request.completeWithAuthorize(account, null,
                     request.sourceVerificationState.authorizationScope.encodeToByteArray(), signInResult)
             } else {
+                val currentRequest = _mobileWalletAdapterServiceEvents.value
+                if (currentRequest is MobileWalletAdapterServiceRequest.SignIn &&
+                    currentRequest.request === request.request) {
+                    rejectStaleRequest(currentRequest)
+                } else {
+                    Log.w(TAG, "signIn: Current request changed during decline, clearing anyway")
+                    _mobileWalletAdapterServiceEvents.value = MobileWalletAdapterServiceRequest.None
+                }
                 request.request.completeWithDecline()
             }
         }
@@ -281,17 +334,19 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
     }
 
     private fun rejectStaleRequest(request: MobileWalletAdapterServiceRequest): Boolean {
+        val currentRequest = _mobileWalletAdapterServiceEvents.value
         if (!_mobileWalletAdapterServiceEvents.compareAndSet(
                 request,
                 MobileWalletAdapterServiceRequest.None
             )
         ) {
-            Log.w(TAG, "Discarding stale request")
+            Log.w(TAG, "Discarding stale request: expected=$request, current=$currentRequest")
             if (request is MobileWalletAdapterServiceRequest.MobileWalletAdapterRemoteRequest) {
                 request.request.cancel()
             }
             return true
         }
+        Log.d(TAG, "Successfully cleared request state")
         return false
     }
 
@@ -300,9 +355,18 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         updated: T
     ): Boolean {
         require(request.request === updated.request) { "When updating a request, the same underlying ScenarioRequest is expected" }
-        if (!_mobileWalletAdapterServiceEvents.compareAndSet(request, updated)
-        ) {
-            Log.w(TAG, "Discarding stale request")
+
+        // If current state is UserAuthenticationRequest, the user is in the biometric flow.
+        // Allow the update by just setting the new value directly.
+        val currentState = _mobileWalletAdapterServiceEvents.value
+        if (currentState is MobileWalletAdapterServiceRequest.UserAuthenticationRequest) {
+            Log.d(TAG, "updateExistingRequest: User authentication in progress, updating request")
+            _mobileWalletAdapterServiceEvents.value = updated
+            return true
+        }
+
+        if (!_mobileWalletAdapterServiceEvents.compareAndSet(request, updated)) {
+            Log.w(TAG, "updateExistingRequest: Discarding stale request, current=$currentState")
             request.request.cancel()
             return false
         }
@@ -342,10 +406,12 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
         // first check if a private key was provided through local props
         return BuildConfig.PRIVATE_KEY?.let { privateKey ->
             val privateKeyRaw = try {
-                val standardBase64NoPadding = privateKey.replace("-", "+").replace("_", "/").trimEnd('=')
-                Base64.decode(standardBase64NoPadding, Base64.NO_PADDING or Base64.NO_WRAP)
-            } catch (_: IllegalArgumentException) {
-                try { Base58.decode(privateKey) } catch (_: Error) {
+                Base58.decode(privateKey)
+            } catch (_: Throwable) {
+                try {
+                    val standardBase64NoPadding = privateKey.replace("-", "+").replace("_", "/").trimEnd('=')
+                    Base64.decode(standardBase64NoPadding, Base64.NO_PADDING or Base64.NO_WRAP)
+                } catch (_: IllegalArgumentException) {
                     throw IllegalArgumentException("could not decode provided private key from local props")
                 }
             }
@@ -376,15 +442,20 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
 
     private suspend fun getKeypairSafe(): Result<AsymmetricCipherKeyPair> =
         try {
+            Log.d(TAG, "getKeypairSafe: Attempting to get keypair")
             Result.success(getKeypair())
         } catch (e: UserNotAuthenticatedException) {
+            Log.d(TAG, "getKeypairSafe: User not authenticated, requesting biometric")
             val future = NotifyingCompletableFuture<BiometricPrompt.AuthenticationResult>()
             _mobileWalletAdapterServiceEvents.emit(MobileWalletAdapterServiceRequest.UserAuthenticationRequest(future))
             future.runCatching {
                 withTimeout(USER_AUTHENTICATION_TIMEOUT_MS) {
                     withContext(Dispatchers.IO) { get() }
+                    Log.d(TAG, "getKeypairSafe: Biometric authentication succeeded")
                     getKeypair()
                 }
+            }.onFailure {
+                Log.w(TAG, "getKeypairSafe: Failed to authenticate", it)
             }
         }
 
