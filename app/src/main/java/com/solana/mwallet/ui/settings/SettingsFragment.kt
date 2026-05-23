@@ -4,6 +4,9 @@
 
 package com.solana.mwallet.ui.settings
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,7 +15,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.solana.mwallet.BarcodeScannerActivity
 import com.solana.mwallet.BuildConfig
 import com.solana.mwallet.MwalletApplication
@@ -33,16 +35,28 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         super.onViewCreated(view, savedInstanceState)
 
         val networkValue = view.findViewById<TextView>(R.id.text_network_value)
+        val rpcValue = view.findViewById<TextView>(R.id.text_rpc_value)
         val importedTitle = view.findViewById<TextView>(R.id.text_imported_title)
         val importedSubtitle = view.findViewById<TextView>(R.id.text_imported_subtitle)
         val versionView = view.findViewById<TextView>(R.id.text_version)
-        val switchBio = view.findViewById<MaterialSwitch>(R.id.switch_biometric)
 
         view.findViewById<View>(R.id.row_network).setOnClickListener {
             NetworkPickerSheet().show(parentFragmentManager, NetworkPickerSheet.TAG)
         }
+        // The RPC URL row is informational. Tapping copies the full endpoint to the
+        // clipboard so a tester can paste it into `solana config set --url …` or a
+        // curl request — opening the JSON-RPC endpoint in a browser (the previous
+        // behaviour) just rendered a 405 page, which was confusing.
         view.findViewById<View>(R.id.row_rpc).setOnClickListener {
             val url = state.rpcUri().toString()
+            (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager)
+                ?.setPrimaryClip(ClipData.newPlainText("Solana RPC endpoint", url))
+            Toast.makeText(requireContext(), R.string.settings_rpc_copied, Toast.LENGTH_SHORT).show()
+        }
+        view.findViewById<View>(R.id.row_faucet).setOnClickListener {
+            val addr = state.publicKey.value
+            val baseUrl = "https://faucet.solana.com"
+            val url = if (!addr.isNullOrBlank()) "$baseUrl/?address=$addr" else baseUrl
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
         view.findViewById<View>(R.id.row_scan_qr).setOnClickListener {
@@ -64,12 +78,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.solanamobile.com/mobile-wallet-adapter/overview")))
         }
 
-        switchBio.setOnCheckedChangeListener { _, _ ->
-            // Biometric requirement is wired into the existing UserAuthenticationUseCase already.
-            // This toggle stays for UX completeness, and is intentionally a no-op until a real
-            // override is implemented — flipping it shouldn't break anything.
-        }
-
         val privateKey: String? = BuildConfig.PRIVATE_KEY
         if (!privateKey.isNullOrBlank()) {
             importedTitle.setText(R.string.settings_imported_key)
@@ -83,6 +91,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         viewLifecycleOwner.lifecycleScope.launch {
             state.network.collectLatest {
                 networkValue.text = "${state.networkLabel()} · ${state.rpcUri().host}"
+                rpcValue.text = state.rpcUri().host
             }
         }
     }

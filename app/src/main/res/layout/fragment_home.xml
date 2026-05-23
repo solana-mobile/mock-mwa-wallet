@@ -232,7 +232,9 @@
             </LinearLayout>
         </FrameLayout>
 
-        <!-- Quick actions: Send / Receive / Swap / Buy -->
+        <!-- Quick actions: Connect (QR) / Receive / Airdrop / Explorer
+             Everything here actually does something - this is a mock MWA wallet,
+             so the entry points are the ones a wallet *tester* needs. -->
         <LinearLayout
             android:id="@+id/quick_actions"
             android:layout_width="match_parent"
@@ -241,20 +243,24 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/action_send"
+                android:id="@+id/action_connect"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingVertical="6dp">
 
                 <ImageView
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:background="@drawable/background_action_circle"
-                    android:contentDescription="@string/action_send"
+                    android:contentDescription="@string/action_connect"
                     android:padding="16dp"
-                    android:src="@drawable/ic_send_24"
+                    android:src="@drawable/ic_qr_24"
                     android:tint="@color/text_primary" />
 
                 <TextView
@@ -262,7 +268,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/action_send"
+                    android:text="@string/action_connect"
                     android:textColor="@color/text_primary" />
             </LinearLayout>
 
@@ -271,8 +277,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingVertical="6dp">
 
                 <ImageView
                     android:layout_width="56dp"
@@ -293,46 +303,56 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/action_swap"
+                android:id="@+id/action_airdrop"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingVertical="6dp">
 
                 <ImageView
+                    android:id="@+id/action_airdrop_icon"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:background="@drawable/background_action_circle"
-                    android:contentDescription="@string/action_swap"
+                    android:contentDescription="@string/action_airdrop"
                     android:padding="16dp"
-                    android:src="@drawable/ic_swap_24"
+                    android:src="@drawable/ic_arrow_down_in"
                     android:tint="@color/text_primary" />
 
                 <TextView
+                    android:id="@+id/action_airdrop_label"
                     style="@style/Theme.MwalletApp.Subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/action_swap"
+                    android:text="@string/action_airdrop"
                     android:textColor="@color/text_primary" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/action_buy"
+                android:id="@+id/action_explorer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingVertical="6dp">
 
                 <ImageView
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:background="@drawable/background_action_circle"
-                    android:contentDescription="@string/action_buy"
+                    android:contentDescription="@string/action_explorer_short"
                     android:padding="16dp"
-                    android:src="@drawable/ic_buy_24"
+                    android:src="@drawable/ic_external_link_24"
                     android:tint="@color/text_primary" />
 
                 <TextView
@@ -340,7 +360,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/action_buy"
+                    android:text="@string/action_explorer_short"
                     android:textColor="@color/text_primary" />
             </LinearLayout>
         </LinearLayout>
@@ -396,58 +416,53 @@
                 android:text="@string/label_authenticate" />
         </LinearLayout>
 
-        <!-- Airdrop banner (only visible on Devnet/Testnet) -->
+        <!-- "How dapps connect" explainer — visible whenever the wallet is unlocked.
+             This is a mock MWA wallet; the most-asked question is "where do I connect
+             to my dapp from?" so we answer it inline. -->
         <LinearLayout
-            android:id="@+id/airdrop_card"
+            android:id="@+id/connect_explainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/background_card"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/background_action_circle"
-                android:contentDescription="@null"
-                android:padding="9dp"
-                android:src="@drawable/ic_arrow_down_in"
-                android:tint="@color/accent_success" />
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_info_24" />
 
                 <TextView
                     style="@style/Theme.MwalletApp.Body"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_devnet_funded"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/label_how_to_connect_title"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/text_airdrop_subtitle"
-                    style="@style/Theme.MwalletApp.Subtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Free test SOL for development" />
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_airdrop"
-                style="@style/Theme.MwalletApp.Button.Outlined"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:minHeight="0dp"
-                android:paddingHorizontal="14dp"
-                android:text="+1 SOL"
-                android:textSize="13sp" />
+            <TextView
+                style="@style/Theme.MwalletApp.Subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/label_how_to_connect_mobile" />
+
+            <TextView
+                style="@style/Theme.MwalletApp.Subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/label_how_to_connect_desktop" />
         </LinearLayout>
 
         <!-- No-wallet hint -->

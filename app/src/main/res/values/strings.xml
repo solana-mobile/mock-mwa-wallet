@@ -33,11 +33,23 @@
     <string name="label_pubkey">Public key</string>
     <string name="label_explorer">Open in Solana Explorer</string>
     <string name="label_explorer_short">Explorer</string>
-    <string name="action_send">Send</string>
+    <string name="action_connect">Connect</string>
     <string name="action_receive">Receive</string>
+    <string name="action_airdrop">Airdrop</string>
+    <string name="action_explorer_short">Explorer</string>
+
+    <!-- Old quick action strings kept for backwards compatibility with anything that
+         still references them. Send/Swap/Buy were unbacked actions and have been removed
+         from the UI; the wallet now exposes only the actions a tester actually needs. -->
+    <string name="action_send">Send</string>
     <string name="action_swap">Swap</string>
     <string name="action_buy">Buy</string>
-    <string name="action_disabled_mock">Mock only — not implemented</string>
+    <string name="action_disabled_mock">Mock wallet — feature not implemented</string>
+    <string name="action_airdrop_disabled_mainnet">Airdrop only available on Devnet and Testnet</string>
+
+    <string name="label_how_to_connect_title">How dapps connect</string>
+    <string name="label_how_to_connect_mobile">Mobile dapps: pick \"Mock MWA Wallet\" from the share / chooser sheet when the dapp asks to connect.</string>
+    <string name="label_how_to_connect_desktop">Desktop dapps: tap Connect above to scan the QR code the dapp shows.</string>
 
     <string name="label_recent_activity">Recent activity</string>
     <string name="label_view_all">View all</string>
@@ -70,8 +82,9 @@
     <string name="settings_network">Selected network</string>
     <string name="settings_rpc">RPC endpoint</string>
     <string name="settings_rpc_default">Default RPC</string>
-    <string name="settings_biometric">Require biometric on connect</string>
-    <string name="settings_biometric_subtitle">When enabled, the device prompts for biometric or PIN every time a dapp asks to sign.</string>
+    <string name="settings_rpc_copied">RPC endpoint copied</string>
+    <string name="settings_faucet">Open Solana faucet</string>
+    <string name="settings_faucet_subtitle">faucet.solana.com — alternative when the in-app airdrop is rate-limited.</string>
     <string name="settings_explorer">Open address in Solana Explorer</string>
     <string name="settings_explorer_subtitle">View tokens and tx history on explorer.solana.com.</string>
     <string name="settings_regenerate">Generate a fresh keypair</string>

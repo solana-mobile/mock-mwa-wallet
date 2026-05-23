@@ -120,6 +120,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@drawable/background_card"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp">
@@ -142,36 +144,41 @@
                     style="@style/Theme.MwalletApp.Subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@string/settings_rpc_default" />
+                    tools:text="api.devnet.solana.com" />
             </LinearLayout>
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_link_24" />
+                android:src="@drawable/ic_copy_16"
+                android:tint="@color/text_muted" />
         </LinearLayout>
 
-        <!-- Security section -->
-        <TextView
-            style="@style/Theme.MwalletApp.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/settings_section_security" />
-
+        <!-- Faucet shortcut — Devnet's RPC airdrop is aggressively rate-limited, so the
+             real-world fallback is faucet.solana.com. We expose it directly. -->
         <LinearLayout
+            android:id="@+id/row_faucet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="@drawable/background_card"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp">
 
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_arrow_down_in" />
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -179,7 +186,7 @@
                     style="@style/Theme.MwalletApp.Body"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/settings_biometric"
+                    android:text="@string/settings_faucet"
                     android:textStyle="bold" />
 
                 <TextView
@@ -187,14 +194,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="@string/settings_biometric_subtitle" />
+                    android:text="@string/settings_faucet_subtitle" />
             </LinearLayout>
 
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/switch_biometric"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_external_link_24" />
         </LinearLayout>
 
         <!-- Developer section -->

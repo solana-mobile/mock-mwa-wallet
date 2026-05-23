@@ -4,10 +4,11 @@
 
 package com.solana.mwallet.ui.tokens
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,7 +56,13 @@ class TokensFragment : Fragment(R.layout.fragment_tokens) {
         networkChipLabel = view.findViewById(R.id.tokens_network_chip_label)
 
         adapter = TokensAdapter { row ->
-            Toast.makeText(requireContext(), TokenMetadata.displayName(row.mint), Toast.LENGTH_SHORT).show()
+            // Tapping a token opens Solana Explorer on the right cluster — for the SOL
+            // pseudo-mint we use the wallet address (the explorer's "tokens" sub-page),
+            // for SPL mints we use the mint itself.
+            val cluster = state.explorerCluster()
+            val target = if (row.isSol) state.publicKey.value ?: return@TokensAdapter else row.mint
+            val url = Format.explorerUrl(cluster, target, isTx = false)
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
         recycler.layoutManager = LinearLayoutManager(requireContext())
         recycler.adapter = adapter

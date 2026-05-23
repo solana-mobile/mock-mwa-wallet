@@ -3,22 +3,22 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. Dark-first wallet aesthetic. -->
+    <!-- Base application theme. Pure black + white, SF Pro Rounded. -->
     <style name="Theme.MwalletApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/brand_violet</item>
-        <item name="colorPrimaryVariant">@color/brand_violet_dark</item>
+        <item name="colorPrimary">@color/text_primary</item>
+        <item name="colorPrimaryVariant">@color/text_primary</item>
         <item name="colorOnPrimary">@color/text_on_accent</item>
-        <item name="colorSecondary">@color/brand_cyan</item>
-        <item name="colorSecondaryVariant">@color/brand_teal</item>
-        <item name="colorOnSecondary">@color/surface_background</item>
-        <item name="colorAccent">@color/brand_violet_light</item>
+        <item name="colorSecondary">@color/text_primary</item>
+        <item name="colorSecondaryVariant">@color/text_primary</item>
+        <item name="colorOnSecondary">@color/text_on_accent</item>
+        <item name="colorAccent">@color/text_primary</item>
         <item name="android:colorBackground">@color/surface_background</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
         <item name="android:statusBarColor" tools:targetApi="l">@color/surface_background</item>
         <item name="android:navigationBarColor" tools:targetApi="l">@color/surface_background</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
-        <item name="android:fontFamily">@font/inter_tight_medium</item>
+        <item name="android:fontFamily">@font/sf_pro_rounded_family</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
@@ -45,14 +45,27 @@
         <item name="android:activityCloseExitAnimation">@anim/slide_out_to_bottom</item>
     </style>
 
+    <!-- BottomSheetDialog theme. windowIsFloating must NOT be set here — Material3's
+         BottomSheetDialog implementation expects a non-floating window so it can dock
+         the sheet to the bottom edge with the standard drag handle. Keeping it floating
+         causes the sheet to render as a centered Dialog. -->
     <style name="Theme.MwalletApp.BottomSheetDialog2" parent="Theme.Material3.DayNight.BottomSheetDialog">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowMinWidthMinor">100%</item>
-        <item name="android:windowMinWidthMajor">100%</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="dialogCornerRadius">@dimen/m3_alert_dialog_corner_size</item>
-        <item name="android:windowBackground">@drawable/background_bottom_sheet_dialog_material_daynight</item>
+        <item name="bottomSheetStyle">@style/Theme.MwalletApp.BottomSheet</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/surface_elevated</item>
+    </style>
+
+    <style name="Theme.MwalletApp.BottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="backgroundTint">@color/surface_elevated</item>
+        <item name="shapeAppearanceOverlay">@style/Theme.MwalletApp.BottomSheet.Shape</item>
+    </style>
+
+    <style name="Theme.MwalletApp.BottomSheet.Shape" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">28dp</item>
+        <item name="cornerSizeTopRight">28dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
     <style name="Theme.MwalletApp.BottomSheetDialog3" parent="Theme.Material3.DayNight.Dialog">
@@ -64,12 +77,14 @@
         <item name="android:windowBackground">@drawable/background_bottom_sheet_dialog_material_daynight</item>
     </style>
 
-    <!-- Primary CTA — gradient violet, white text -->
+    <!-- Primary CTA — white pill, black text -->
     <style name="Theme.MwalletApp.Button">
         <item name="android:textColor">@color/text_on_accent</item>
         <item name="android:background">@drawable/button_primary</item>
-        <item name="android:fontFamily">@font/inter_tight_semi_bold</item>
-        <item name="android:letterSpacing">0.01</item>
+        <item name="android:fontFamily">@font/sf_pro_rounded_family</item>
+        <item name="android:textFontWeight" tools:targetApi="p">600</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.005</item>
         <item name="android:minHeight">52dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">16sp</item>
@@ -77,13 +92,12 @@
         <item name="android:stateListAnimator">@null</item>
     </style>
 
-    <!-- Secondary — ghost button with subtle outline -->
+    <!-- Secondary — outlined ghost button, white text -->
     <style name="Theme.MwalletApp.Button.Outlined" parent="Theme.MwalletApp.Button">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:background">@drawable/button_secondary</item>
     </style>
 
-    <!-- Destructive — used for decline/cancel inside approval sheets -->
     <style name="Theme.MwalletApp.Button.Ghost" parent="Theme.MwalletApp.Button">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:background">@drawable/button_ghost</item>
@@ -91,8 +105,10 @@
 
     <style name="Theme.MwalletApp.Header" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/text_primary</item>
-        <item name="android:fontFamily">@font/inter_tight_semi_bold</item>
-        <item name="android:letterSpacing">-0.005</item>
+        <item name="android:fontFamily">@font/sf_pro_rounded_family</item>
+        <item name="android:textFontWeight" tools:targetApi="p">700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.015</item>
         <item name="android:textSize">28sp</item>
     </style>
 
@@ -106,35 +122,46 @@
 
     <style name="Theme.MwalletApp.Display" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/text_primary</item>
-        <item name="android:fontFamily">@font/inter_tight_semi_bold</item>
-        <item name="android:letterSpacing">-0.02</item>
-        <item name="android:textSize">44sp</item>
+        <item name="android:fontFamily">@font/sf_pro_rounded_family</item>
+        <item name="android:textFontWeight" tools:targetApi="p">700</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.03</item>
+        <item name="android:textSize">48sp</item>
     </style>
 
     <style name="Theme.MwalletApp.Subtitle" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:fontFamily">@font/inter_tight_medium</item>
-        <item name="android:letterSpacing">0.001</item>
+        <item name="android:fontFamily">@font/sf_pro_rounded_family</item>
+        <item name="android:textFontWeight" tools:targetApi="p">500</item>
+        <item name="android:letterSpacing">0</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="Theme.MwalletApp.Body" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/text_primary</item>
-        <item name="android:fontFamily">@font/inter_tight_medium</item>
+        <item name="android:fontFamily">@font/sf_pro_rounded_family</item>
+        <item name="android:textFontWeight" tools:targetApi="p">500</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <style name="Theme.MwalletApp.Caption" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/text_muted</item>
-        <item name="android:fontFamily">@font/inter_tight_medium</item>
-        <item name="android:letterSpacing">0.04</item>
+        <item name="android:fontFamily">@font/sf_pro_rounded_family</item>
+        <item name="android:textFontWeight" tools:targetApi="p">500</item>
+        <item name="android:letterSpacing">0.06</item>
         <item name="android:textSize">11sp</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
+    <!-- Monospace stays monospace — addresses and signatures need fixed-width -->
     <style name="Theme.MwalletApp.Mono" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:fontFamily">monospace</item>
         <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- Soft white pill behind the selected bottom-nav item -->
+    <style name="Theme.MwalletApp.BottomNavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#1FFFFFFF</item>
     </style>
 </resources>

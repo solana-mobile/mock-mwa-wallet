@@ -7,58 +7,63 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Legacy palette (kept for backwards compatibility with existing styles) -->
-    <color name="green_100">#FFd1f6ce</color>
-    <color name="green_200">#FFb2efad</color>
-    <color name="green_400">#FF73E26F</color>
-    <color name="green_700">#FF26b541</color>
-    <color name="lilac_100">#FFD3BCFF</color>
-    <color name="lilac_400">#FF7946d5</color>
-    <color name="lilac_700">#FF4415ba</color>
-    <color name="grey_16">#FF282828</color>
+    <!-- Legacy palette (kept so the existing MWA fragments compile against old style attrs) -->
+    <color name="green_100">#FFEFEFEF</color>
+    <color name="green_200">#FFE5E5E5</color>
+    <color name="green_400">#FFFFFFFF</color>
+    <color name="green_700">#FFFFFFFF</color>
+    <color name="lilac_100">#FFFFFFFF</color>
+    <color name="lilac_400">#FFFFFFFF</color>
+    <color name="lilac_700">#FFFFFFFF</color>
+    <color name="grey_16">#FF1A1A1A</color>
     <color name="grey_55">#FF8C8C8C</color>
-    <color name="off_white_dark">#FFEEEEE7</color>
-    <color name="off_white">#FFFCFCF7</color>
+    <color name="off_white_dark">#FFB4B4B4</color>
+    <color name="off_white">#FFF8F8F8</color>
 
-    <!-- Fuse-inspired premium palette (dark-first) -->
-    <color name="surface_background">#FF0A0A12</color>
-    <color name="surface_elevated">#FF15151F</color>
-    <color name="surface_card">#FF1C1C2A</color>
-    <color name="surface_chip">#FF22223A</color>
-    <color name="surface_chip_pressed">#FF2D2D4A</color>
-    <color name="surface_divider">#33FFFFFF</color>
-    <color name="surface_outline">#22FFFFFF</color>
+    <!-- Monochrome wallet palette (dark-first, classy) -->
+    <color name="surface_background">#FF000000</color>
+    <color name="surface_elevated">#FF0D0D0D</color>
+    <color name="surface_card">#FF111111</color>
+    <color name="surface_chip">#FF1A1A1A</color>
+    <color name="surface_chip_pressed">#FF262626</color>
+    <color name="surface_divider">#1AFFFFFF</color>
+    <color name="surface_outline">#14FFFFFF</color>
 
-    <color name="text_primary">#FFF5F5FA</color>
-    <color name="text_secondary">#FFAFAFC2</color>
-    <color name="text_muted">#FF6E6E85</color>
-    <color name="text_on_accent">#FFFFFFFF</color>
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#FFB4B4B4</color>
+    <color name="text_muted">#FF6E6E6E</color>
+    <color name="text_on_accent">#FF000000</color>
+    <color name="text_on_dark">#FFFFFFFF</color>
 
-    <color name="brand_violet">#FF7946D5</color>
-    <color name="brand_violet_light">#FFB388FF</color>
-    <color name="brand_violet_dark">#FF4415BA</color>
-    <color name="brand_pink">#FFE05CFF</color>
-    <color name="brand_cyan">#FF4FF0E0</color>
-    <color name="brand_teal">#FF36C2A6</color>
+    <!-- Brand colours collapse to monochrome. Existing references keep working. -->
+    <color name="brand_violet">#FFFFFFFF</color>
+    <color name="brand_violet_light">#FFFFFFFF</color>
+    <color name="brand_violet_dark">#FFE5E5E5</color>
+    <color name="brand_pink">#FFFFFFFF</color>
+    <color name="brand_cyan">#FFFFFFFF</color>
+    <color name="brand_teal">#FFFFFFFF</color>
 
-    <color name="accent_success">#FF34C759</color>
-    <color name="accent_success_soft">#1A34C759</color>
-    <color name="accent_danger">#FFFF5C5C</color>
-    <color name="accent_danger_soft">#1AFF5C5C</color>
-    <color name="accent_warning">#FFFFB547</color>
-    <color name="accent_warning_soft">#1AFFB547</color>
-    <color name="accent_info">#FF5AB0FF</color>
+    <!-- Transaction direction stays gently semantic — but lower-saturation so it doesn't shout -->
+    <color name="accent_success">#FFEAEAEA</color>
+    <color name="accent_success_soft">#1FFFFFFF</color>
+    <color name="accent_danger">#FFEAEAEA</color>
+    <color name="accent_danger_soft">#1FFFFFFF</color>
+    <color name="accent_warning">#FFEAEAEA</color>
+    <color name="accent_warning_soft">#1FFFFFFF</color>
+    <color name="accent_info">#FFEAEAEA</color>
 
-    <color name="cluster_devnet">#FFFFB547</color>
-    <color name="cluster_devnet_soft">#22FFB547</color>
-    <color name="cluster_mainnet">#FF34C759</color>
-    <color name="cluster_mainnet_soft">#2234C759</color>
-    <color name="cluster_testnet">#FF5AB0FF</color>
-    <color name="cluster_testnet_soft">#225AB0FF</color>
+    <!-- Cluster dots are the only place where a touch of colour survives, so users can
+         tell at a glance which network they're on without reading the chip. -->
+    <color name="cluster_devnet">#FFFFFFFF</color>
+    <color name="cluster_devnet_soft">#14FFFFFF</color>
+    <color name="cluster_mainnet">#FFFFFFFF</color>
+    <color name="cluster_mainnet_soft">#14FFFFFF</color>
+    <color name="cluster_testnet">#FFFFFFFF</color>
+    <color name="cluster_testnet_soft">#14FFFFFF</color>
 
-    <!-- Light-mode mirrors so the app stays readable in either system theme -->
-    <color name="light_surface_background">#FFF8F8FB</color>
-    <color name="light_surface_card">#FFFFFFFF</color>
-    <color name="light_text_primary">#FF14141B</color>
-    <color name="light_text_secondary">#FF5A5A6E</color>
+    <!-- Light-mode mirrors (kept for completeness; default theme is dark) -->
+    <color name="light_surface_background">#FFFFFFFF</color>
+    <color name="light_surface_card">#FFF7F7F7</color>
+    <color name="light_text_primary">#FF000000</color>
+    <color name="light_text_secondary">#FF6E6E6E</color>
 </resources>

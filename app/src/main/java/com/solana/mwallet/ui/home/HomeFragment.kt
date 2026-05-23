@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -60,14 +61,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var quickActions: View
     private lateinit var authCard: View
     private lateinit var noWalletCard: View
-    private lateinit var airdropCard: View
-    private lateinit var airdropBtn: AppCompatButton
-    private lateinit var airdropSubtitle: TextView
+    private lateinit var connectExplainer: View
     private lateinit var authBtn: AppCompatButton
-    private lateinit var actionSend: View
+    private lateinit var actionConnect: View
     private lateinit var actionReceive: View
-    private lateinit var actionSwap: View
-    private lateinit var actionBuy: View
+    private lateinit var actionAirdrop: View
+    private lateinit var actionAirdropIcon: ImageView
+    private lateinit var actionAirdropLabel: TextView
+    private lateinit var actionExplorer: View
     private lateinit var scanQrBtn: ImageButton
 
     private lateinit var activityRecycler: RecyclerView
@@ -93,14 +94,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         quickActions = view.findViewById(R.id.quick_actions)
         authCard = view.findViewById(R.id.auth_card)
         noWalletCard = view.findViewById(R.id.no_wallet_card)
-        airdropCard = view.findViewById(R.id.airdrop_card)
-        airdropBtn = view.findViewById(R.id.btn_airdrop)
-        airdropSubtitle = view.findViewById(R.id.text_airdrop_subtitle)
+        connectExplainer = view.findViewById(R.id.connect_explainer)
         authBtn = view.findViewById(R.id.btn_authenticate)
-        actionSend = view.findViewById(R.id.action_send)
+        actionConnect = view.findViewById(R.id.action_connect)
         actionReceive = view.findViewById(R.id.action_receive)
-        actionSwap = view.findViewById(R.id.action_swap)
-        actionBuy = view.findViewById(R.id.action_buy)
+        actionAirdrop = view.findViewById(R.id.action_airdrop)
+        actionAirdropIcon = view.findViewById(R.id.action_airdrop_icon)
+        actionAirdropLabel = view.findViewById(R.id.action_airdrop_label)
+        actionExplorer = view.findViewById(R.id.action_explorer)
         scanQrBtn = view.findViewById(R.id.btn_scan_qr)
         viewAllBtn = view.findViewById(R.id.btn_view_all_activity)
 
@@ -122,21 +123,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         explorerBtn.setOnClickListener { openExplorerForAddress() }
         refreshBtn.setOnClickListener { refreshAll() }
 
-        actionSend.setOnClickListener {
-            Toast.makeText(requireContext(), R.string.action_disabled_mock, Toast.LENGTH_SHORT).show()
+        actionConnect.setOnClickListener {
+            startActivity(Intent(requireContext(), BarcodeScannerActivity::class.java))
         }
         actionReceive.setOnClickListener { showReceive() }
-        actionSwap.setOnClickListener {
-            Toast.makeText(requireContext(), R.string.action_disabled_mock, Toast.LENGTH_SHORT).show()
-        }
-        actionBuy.setOnClickListener {
-            Toast.makeText(requireContext(), R.string.action_disabled_mock, Toast.LENGTH_SHORT).show()
-        }
+        actionAirdrop.setOnClickListener { requestAirdrop() }
+        actionExplorer.setOnClickListener { openExplorerForAddress() }
         viewAllBtn.setOnClickListener {
             findNavController().navigate(R.id.nav_history)
         }
-
-        airdropBtn.setOnClickListener { requestAirdrop() }
 
         authBtn.setOnClickListener {
             UserAuthenticationUseCase.authenticate(requireActivity()) { result, error ->
@@ -190,17 +185,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         if (pubkey != null) {
             authCard.visibility = View.GONE
             noWalletCard.visibility = View.GONE
+            connectExplainer.visibility = View.VISIBLE
             pubkeyRow.visibility = View.VISIBLE
             quickActions.visibility = View.VISIBLE
             pubkeyText.text = Format.shortAddress(pubkey, 6, 6)
             lockStatus.setText(R.string.label_unlocked_for)
-            updateAirdropCard()
+            updateAirdropAffordance()
         } else {
             authCard.visibility = View.VISIBLE
             noWalletCard.visibility = View.VISIBLE
+            connectExplainer.visibility = View.GONE
             pubkeyRow.visibility = View.INVISIBLE
             quickActions.visibility = View.GONE
-            airdropCard.visibility = View.GONE
             lockStatus.setText(R.string.label_locked)
             balanceText.text = "0.0000"
         }
@@ -214,12 +210,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun updateAirdropCard() {
-        val isDev = state.network.value != ProtocolContract.CLUSTER_MAINNET_BETA
-        airdropCard.visibility = if (isDev) View.VISIBLE else View.GONE
-        airdropSubtitle.text = if (state.network.value == ProtocolContract.CLUSTER_DEVNET)
-            "Free test SOL on Devnet"
-        else "Free test SOL on Testnet"
+    /**
+     * The Airdrop quick action is only meaningful on Devnet / Testnet — disable it on
+     * Mainnet so we don't pretend to do something the RPC will refuse. We dim the icon
+     * and leave the click handler to surface a toast explaining why.
+     */
+    private fun updateAirdropAffordance() {
+        val isMainnet = state.network.value == ProtocolContract.CLUSTER_MAINNET_BETA
+        actionAirdrop.alpha = if (isMainnet) 0.4f else 1.0f
+        actionAirdrop.isEnabled = !isMainnet
+        actionAirdropIcon.isEnabled = !isMainnet
+        actionAirdropLabel.isEnabled = !isMainnet
     }
 
     private fun refreshAll() {
@@ -318,16 +319,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun requestAirdrop() {
         val address = state.publicKey.value ?: return
         if (state.network.value == ProtocolContract.CLUSTER_MAINNET_BETA) {
-            Toast.makeText(requireContext(), R.string.label_airdrop_only_devnet, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.action_airdrop_disabled_mainnet, Toast.LENGTH_SHORT).show()
             return
         }
         Toast.makeText(requireContext(), R.string.label_airdrop_requesting, Toast.LENGTH_SHORT).show()
-        airdropBtn.isEnabled = false
+        actionAirdrop.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
             val sig = withContext(Dispatchers.IO) {
                 AirdropUseCase.requestAirdrop(state.rpcUri(), address)
             }
-            airdropBtn.isEnabled = true
+            actionAirdrop.isEnabled = true
             if (sig != null) {
                 Toast.makeText(requireContext(), R.string.label_airdrop_done, Toast.LENGTH_SHORT).show()
                 refreshAll()
