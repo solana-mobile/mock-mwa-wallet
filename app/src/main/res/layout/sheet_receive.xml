@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_bottom_sheet_dialog_daynight"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="14dp"
+    android:paddingBottom="28dp">
+
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:background="@drawable/background_handle" />
+
+    <TextView
+        style="@style/Theme.MwalletApp.Header2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/label_receive_sheet_title" />
+
+    <TextView
+        android:id="@+id/text_receive_subtitle"
+        style="@style/Theme.MwalletApp.Subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:text="@string/label_receive_sheet_body" />
+
+    <ImageView
+        android:id="@+id/receive_qr"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/background_card_flat"
+        android:padding="16dp"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/text_receive_pubkey"
+        style="@style/Theme.MwalletApp.Mono"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/background_grey_rounded_corners"
+        android:gravity="center"
+        android:padding="14dp"
+        android:textIsSelectable="true"
+        android:textSize="13sp"
+        tools:text="9xQe…uHe2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_receive_copy"
+            style="@style/Theme.MwalletApp.Button.Outlined"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:text="@string/label_copy" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_receive_share"
+            style="@style/Theme.MwalletApp.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:text="@string/label_share_address" />
+    </LinearLayout>
+</LinearLayout>

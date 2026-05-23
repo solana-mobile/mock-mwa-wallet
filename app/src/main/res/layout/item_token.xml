@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:minHeight="64dp"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+    <View
+        android:id="@+id/token_icon"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:background="@drawable/background_token_icon_generic" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/token_symbol"
+            style="@style/Theme.MwalletApp.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            tools:text="USDC" />
+
+        <TextView
+            android:id="@+id/token_name"
+            style="@style/Theme.MwalletApp.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="USD Coin" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/token_amount"
+            style="@style/Theme.MwalletApp.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            tools:text="12.34" />
+
+        <TextView
+            android:id="@+id/token_mint"
+            style="@style/Theme.MwalletApp.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"
+            tools:text="EPjF…wNYB" />
+    </LinearLayout>
+</LinearLayout>

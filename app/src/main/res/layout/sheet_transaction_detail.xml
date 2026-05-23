@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_bottom_sheet_dialog_daynight">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="28dp">
+
+        <View
+            android:layout_width="36dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/background_handle" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+
+                <View
+                    android:id="@+id/detail_badge_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/background_tx_in" />
+
+                <ImageView
+                    android:id="@+id/detail_badge_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_arrow_down_in" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/detail_title"
+                    style="@style/Theme.MwalletApp.Header3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Received" />
+
+                <TextView
+                    android:id="@+id/detail_when"
+                    style="@style/Theme.MwalletApp.Subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="2 min ago · confirmed" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/detail_amount"
+            style="@style/Theme.MwalletApp.Display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            tools:text="+0.0123 SOL" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/background_card_flat"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout style="@style/Theme.MwalletApp.Subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Theme.MwalletApp.Subtitle"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/history_signature" />
+
+                <TextView
+                    android:id="@+id/detail_signature"
+                    style="@style/Theme.MwalletApp.Mono"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="middle"
+                    android:maxLines="1"
+                    android:textIsSelectable="true"
+                    tools:text="2bM4…XzeP" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="12dp"
+                android:background="@color/surface_outline" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Theme.MwalletApp.Subtitle"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/history_slot" />
+
+                <TextView
+                    android:id="@+id/detail_slot"
+                    style="@style/Theme.MwalletApp.Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:text="324,124,221" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="12dp"
+                android:background="@color/surface_outline" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Theme.MwalletApp.Subtitle"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/history_block_time" />
+
+                <TextView
+                    android:id="@+id/detail_block_time"
+                    style="@style/Theme.MwalletApp.Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:text="May 22, 2026 11:13 AM" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="12dp"
+                android:background="@color/surface_outline" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Theme.MwalletApp.Subtitle"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/history_fee" />
+
+                <TextView
+                    android:id="@+id/detail_fee"
+                    style="@style/Theme.MwalletApp.Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:text="0.000005 SOL" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_detail_explorer"
+            style="@style/Theme.MwalletApp.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="@string/history_view_explorer" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

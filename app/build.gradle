@@ -120,6 +120,7 @@ dependencies {
     implementation libs.androidx.lifecycle.runtime.ktx
     implementation libs.androidx.lifecycle.viewmodel.ktx
     implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
     implementation libs.androidx.room.runtime
     implementation libs.androidx.room.ktx
     implementation libs.material
@@ -165,4 +166,10 @@ dependencies {
 
     // Retrofit for networking
     implementation libs.retrofit
+
+    // Pull-to-refresh
+    implementation libs.androidx.swiperefreshlayout
+
+    // QR code generation
+    implementation libs.zxing.core
 }

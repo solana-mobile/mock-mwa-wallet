@@ -3,25 +3,26 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.MwalletApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar.Bridge">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/lilac_100</item>
-        <item name="colorPrimaryVariant">@color/lilac_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/green_200</item>
-        <item name="colorSecondaryVariant">@color/green_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+    <style name="Theme.MwalletApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand_violet_light</item>
+        <item name="colorPrimaryVariant">@color/brand_violet</item>
+        <item name="colorOnPrimary">@color/text_on_accent</item>
+        <item name="colorSecondary">@color/brand_cyan</item>
+        <item name="colorOnSecondary">@color/surface_background</item>
+        <item name="colorAccent">@color/brand_violet_light</item>
+        <item name="android:colorBackground">@color/surface_background</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/surface_background</item>
+        <item name="android:navigationBarColor" tools:targetApi="l">@color/surface_background</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:fontFamily">@font/inter_tight_medium</item>
     </style>
 
     <style name="Theme.MwalletApp.Header" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/off_white_dark</item>
+        <item name="android:textColor">@color/text_primary</item>
         <item name="android:fontFamily">@font/inter_tight_semi_bold</item>
-        <item name="android:letterSpacing">0.001</item>
-        <item name="android:textSize">22sp</item>
+        <item name="android:letterSpacing">-0.005</item>
+        <item name="android:textSize">28sp</item>
     </style>
 </resources>

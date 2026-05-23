@@ -4,45 +4,152 @@
 
 <resources>
     <string name="app_name">Mock MWA Wallet</string>
+    <string name="app_short_name">mwallet</string>
+    <string name="app_tagline">Mock wallet · for testing only</string>
 
-    <!-- Main activity strings -->
+    <!-- Tabs -->
+    <string name="tab_home">Home</string>
+    <string name="tab_tokens">Tokens</string>
+    <string name="tab_history">Activity</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Home screen -->
     <string name="label_hello_world">I\'m a wallet!</string>
     <string name="label_copy">Copy</string>
-    <string name="label_network">Network:</string>
-    <string name="label_balance">Balance:</string>
+    <string name="label_network">Network</string>
+    <string name="label_balance">Balance</string>
     <string name="label_copied">Address copied</string>
     <string name="label_balance_loading">…</string>
     <string name="label_balance_error">—</string>
+    <string name="label_total_balance">Total balance</string>
+    <string name="label_main_wallet">Main wallet</string>
+    <string name="label_authenticate">Authenticate</string>
+    <string name="label_authenticate_unlock">Unlock to view wallet</string>
+    <string name="label_authenticate_subtitle">Confirm with biometrics or device PIN to access your mock wallet for 15 minutes.</string>
+    <string name="label_unlocked_for">Unlocked · 15 min</string>
+    <string name="label_locked">Locked</string>
+    <string name="label_no_wallet_title">No wallet yet</string>
+    <string name="label_no_wallet_body">Authenticate and connect from a dapp once — a keypair will be created automatically. Or drop a private key into `local.properties` to use your own.</string>
+    <string name="label_pubkey">Public key</string>
+    <string name="label_explorer">Open in Solana Explorer</string>
+    <string name="label_explorer_short">Explorer</string>
+    <string name="action_send">Send</string>
+    <string name="action_receive">Receive</string>
+    <string name="action_swap">Swap</string>
+    <string name="action_buy">Buy</string>
+    <string name="action_disabled_mock">Mock only — not implemented</string>
+
+    <string name="label_recent_activity">Recent activity</string>
+    <string name="label_view_all">View all</string>
+    <string name="label_no_activity_title">No activity yet</string>
+    <string name="label_no_activity_body">Sign or send a transaction from a connected dapp and it will show up here.</string>
+    <string name="label_loading_activity">Loading recent activity…</string>
+
+    <string name="label_tokens">Assets</string>
+    <string name="label_no_tokens_title">No SPL tokens</string>
+    <string name="label_no_tokens_body">This wallet has SOL only on the selected network. SPL tokens will appear here once received.</string>
+    <string name="label_loading_tokens">Loading SPL tokens…</string>
+
+    <!-- Network -->
     <string name="network_devnet">Devnet</string>
     <string name="network_mainnet">Mainnet</string>
     <string name="network_testnet">Testnet</string>
+    <string name="label_change_network">Tap to change network</string>
+
+    <!-- Receive sheet -->
+    <string name="label_receive_sheet_title">Receive SOL or SPL</string>
+    <string name="label_receive_sheet_body">Send tokens to the address below. Anything on the selected network will be visible inside this wallet.</string>
+    <string name="label_share_address">Share address</string>
+
+    <!-- Settings -->
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_network">Network</string>
+    <string name="settings_section_security">Security</string>
+    <string name="settings_section_developer">Developer</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_network">Selected network</string>
+    <string name="settings_rpc">RPC endpoint</string>
+    <string name="settings_rpc_default">Default RPC</string>
+    <string name="settings_biometric">Require biometric on connect</string>
+    <string name="settings_biometric_subtitle">When enabled, the device prompts for biometric or PIN every time a dapp asks to sign.</string>
+    <string name="settings_explorer">Open address in Solana Explorer</string>
+    <string name="settings_explorer_subtitle">View tokens and tx history on explorer.solana.com.</string>
+    <string name="settings_regenerate">Generate a fresh keypair</string>
+    <string name="settings_regenerate_subtitle">Replace the active key with a freshly generated one. The previous key is removed.</string>
+    <string name="settings_imported_key">Imported via local.properties</string>
+    <string name="settings_imported_key_subtitle">A private key was loaded from local.properties at build time.</string>
+    <string name="settings_no_imported">No imported key</string>
+    <string name="settings_no_imported_subtitle">Drop a Base58 or Base64 private key into local.properties to use your own.</string>
+    <string name="settings_version_label">App version</string>
+    <string name="settings_repo">Open the GitHub repo</string>
+    <string name="settings_repo_subtitle">solana-mobile/mock-mwa-wallet</string>
+    <string name="settings_docs">MWA documentation</string>
+    <string name="settings_docs_subtitle">docs.solanamobile.com</string>
+    <string name="settings_qr_scan">Scan a QR connection request</string>
+    <string name="settings_qr_scan_subtitle">For desktop dapps that show an MWA QR code.</string>
+    <string name="settings_warning_title">Testing wallet only</string>
+    <string name="settings_warning_body">Do not send real funds. Keys are stored locally and signing is unattested.</string>
+
+    <!-- History screen -->
+    <string name="history_title">Activity</string>
+    <string name="history_loading">Loading recent activity…</string>
+    <string name="history_empty_title">No activity yet</string>
+    <string name="history_empty_body">Once this wallet signs or sends a transaction, the signature will appear here.</string>
+    <string name="history_filter_all">All</string>
+    <string name="history_filter_in">Received</string>
+    <string name="history_filter_out">Sent</string>
+    <string name="history_filter_program">Program</string>
+    <string name="history_status_confirmed">Confirmed</string>
+    <string name="history_status_failed">Failed</string>
+    <string name="history_view_explorer">View on Explorer</string>
+    <string name="history_signature">Signature</string>
+    <string name="history_slot">Slot</string>
+    <string name="history_block_time">Block time</string>
+    <string name="history_fee">Fee</string>
+    <string name="history_memo">Memo</string>
+    <string name="history_type_receive">Received</string>
+    <string name="history_type_send">Sent</string>
+    <string name="history_type_program">Program interaction</string>
+    <string name="history_type_self">Self transfer</string>
+    <string name="history_type_unknown">Transaction</string>
+
+    <!-- Tokens screen -->
+    <string name="tokens_title">Assets</string>
+    <string name="tokens_total_label">Total assets</string>
+    <string name="tokens_sol_name">Solana</string>
+    <string name="tokens_usdc_name">USD Coin</string>
+    <string name="tokens_loading">Loading SPL tokens…</string>
+    <string name="tokens_no_tokens">No SPL tokens on this network</string>
+    <string name="tokens_amount_format">%1$s %2$s</string>
 
     <!-- Authorize dapp fragment strings -->
     <string name="label_authorize_dapp">Authorize dapp</string>
-    <string name="label_verification_state">Status:</string>
-    <string name="label_verification_scope">Scope:</string>
+    <string name="label_verification_state">Status</string>
+    <string name="label_verification_scope">Scope</string>
     <string name="label_simulate_cluster_not_supported">Simulate cluster not supported</string>
+    <string name="label_using_wallet">Using wallet</string>
+    <string name="label_on_network">on</string>
 
     <!-- Sign In fragment strings -->
     <string name="label_sign_in">Sign In</string>
     <string name="label_sign_in_subtitle">wants you to sign in with your Solana account</string>
-    <string name="label_message">message:</string>
+    <string name="label_message">Message</string>
 
     <!-- Sign Payload fragment strings -->
     <string name="label_sign_messages">Sign message(s)</string>
-    <string name="label_num_txns">Num payloads:</string>
+    <string name="label_num_txns">Payloads</string>
     <string name="label_simulate_authorization_failed">Simulate auth token invalid</string>
     <string name="label_simulate_invalid_payloads">Simulate first payload invalid</string>
     <string name="label_simulate_too_many_payloads">Simulate too many payloads</string>
 
     <!-- Sign Transaction fragment strings -->
     <string name="label_sign_transactions">is requesting a transaction</string>
-    <string name="label_expected_changes">Expected Changes</string>
+    <string name="label_expected_changes">Expected changes</string>
 
     <!-- Transaction scanning states -->
-    <string name="str_scanning_transaction">scanning transaction…</string>
-    <string name="str_no_state_change">no expected state changes</string>
-    <string name="str_scanning_not_available">\u26A0 transaction simulation not available</string>
+    <string name="str_scanning_transaction">Scanning transaction…</string>
+    <string name="str_no_state_change">No expected state changes</string>
+    <string name="str_scanning_not_available">⚠ Transaction simulation not available</string>
 
     <!-- Send Transaction fragment strings -->
     <string name="label_requesting_transactions">is requesting transaction(s)</string>
@@ -56,16 +163,16 @@
     <string name="label_cancel">Cancel</string>
     <string name="label_connect">Connect</string>
     <string name="label_approve">Approve</string>
-    <string name="label_cluster">Cluster:</string>
+    <string name="label_cluster">Cluster</string>
     <string name="label_authorize">Authorize</string>
     <string name="label_decline">Decline</string>
     <string name="label_simulate_internal_error">Simulate internal error</string>
 
     <!-- Client verification states -->
-    <string name="str_verification_in_progress">Verification in progress</string>
-    <string name="str_verification_succeeded">Verification successful</string>
-    <string name="str_verification_failed">Verification failed</string>
-    <string name="str_verification_not_verifiable">Client not verifiable</string>
+    <string name="str_verification_in_progress">Verifying source…</string>
+    <string name="str_verification_succeeded">Source verified</string>
+    <string name="str_verification_failed">Source verification failed</string>
+    <string name="str_verification_not_verifiable">Source not verifiable</string>
 
     <!-- No connection due to low power warning strings-->
     <string name="low_power_mode_warning_title">Low Power Mode</string>
@@ -81,4 +188,12 @@
     <string name="label_open_settings">Open Settings</string>
     <string name="str_invalid_mwa_qr">Invalid QR!</string>
     <string name="str_camera_permission_required">Camera permission is required!</string>
+
+    <!-- Misc -->
+    <string name="label_devnet_funded">Devnet airdrop · 1 SOL</string>
+    <string name="label_airdrop_done">Airdropped 1 SOL ✓</string>
+    <string name="label_airdrop_failed">Airdrop failed</string>
+    <string name="label_airdrop_only_devnet">Airdrop only available on Devnet/Testnet</string>
+    <string name="label_airdrop_requesting">Requesting airdrop…</string>
+    <string name="label_explorer_disabled">Authenticate first to open in Explorer</string>
 </resources>

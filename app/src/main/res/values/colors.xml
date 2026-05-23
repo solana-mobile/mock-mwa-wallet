@@ -4,13 +4,10 @@
   -->
 
 <resources>
-<!--    <color name="purple_200">#FFBB86FC</color>-->
-<!--    <color name="purple_500">#FF6200EE</color>-->
-<!--    <color name="purple_700">#FF3700B3</color>-->
-<!--    <color name="teal_200">#FF03DAC5</color>-->
-<!--    <color name="teal_700">#FF018786</color>-->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Legacy palette (kept for backwards compatibility with existing styles) -->
     <color name="green_100">#FFd1f6ce</color>
     <color name="green_200">#FFb2efad</color>
     <color name="green_400">#FF73E26F</color>
@@ -22,4 +19,46 @@
     <color name="grey_55">#FF8C8C8C</color>
     <color name="off_white_dark">#FFEEEEE7</color>
     <color name="off_white">#FFFCFCF7</color>
+
+    <!-- Fuse-inspired premium palette (dark-first) -->
+    <color name="surface_background">#FF0A0A12</color>
+    <color name="surface_elevated">#FF15151F</color>
+    <color name="surface_card">#FF1C1C2A</color>
+    <color name="surface_chip">#FF22223A</color>
+    <color name="surface_chip_pressed">#FF2D2D4A</color>
+    <color name="surface_divider">#33FFFFFF</color>
+    <color name="surface_outline">#22FFFFFF</color>
+
+    <color name="text_primary">#FFF5F5FA</color>
+    <color name="text_secondary">#FFAFAFC2</color>
+    <color name="text_muted">#FF6E6E85</color>
+    <color name="text_on_accent">#FFFFFFFF</color>
+
+    <color name="brand_violet">#FF7946D5</color>
+    <color name="brand_violet_light">#FFB388FF</color>
+    <color name="brand_violet_dark">#FF4415BA</color>
+    <color name="brand_pink">#FFE05CFF</color>
+    <color name="brand_cyan">#FF4FF0E0</color>
+    <color name="brand_teal">#FF36C2A6</color>
+
+    <color name="accent_success">#FF34C759</color>
+    <color name="accent_success_soft">#1A34C759</color>
+    <color name="accent_danger">#FFFF5C5C</color>
+    <color name="accent_danger_soft">#1AFF5C5C</color>
+    <color name="accent_warning">#FFFFB547</color>
+    <color name="accent_warning_soft">#1AFFB547</color>
+    <color name="accent_info">#FF5AB0FF</color>
+
+    <color name="cluster_devnet">#FFFFB547</color>
+    <color name="cluster_devnet_soft">#22FFB547</color>
+    <color name="cluster_mainnet">#FF34C759</color>
+    <color name="cluster_mainnet_soft">#2234C759</color>
+    <color name="cluster_testnet">#FF5AB0FF</color>
+    <color name="cluster_testnet_soft">#225AB0FF</color>
+
+    <!-- Light-mode mirrors so the app stays readable in either system theme -->
+    <color name="light_surface_background">#FFF8F8FB</color>
+    <color name="light_surface_card">#FFFFFFFF</color>
+    <color name="light_text_primary">#FF14141B</color>
+    <color name="light_text_secondary">#FF5A5A6E</color>
 </resources>
