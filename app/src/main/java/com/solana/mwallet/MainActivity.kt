@@ -5,61 +5,57 @@
 package com.solana.mwallet
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.solana.mobilewalletadapter.walletlib.association.RemoteAssociationUri
 import com.solana.mwallet.databinding.ActivityMainBinding
-import com.solana.mwallet.usecase.UserAuthenticationUseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var viewBinding: ActivityMainBinding
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        viewBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        val navHost = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        binding.bottomNavigation.setupWithNavController(navHost.navController)
 
-        viewBinding.button.setOnClickListener {
-            UserAuthenticationUseCase.authenticate(this) { result , error ->
-                Toast.makeText(applicationContext,
-                    result?.let { "Authentication succeeded!" }
-                        ?: error?.let { "Authentication error: $it" }
-                        ?: "Authentication failed", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-
+        // Handle desktop QR / remote MWA association URIs by routing into the existing
+        // MobileWalletAdapterActivity, just like before.
         intent.data?.let { uri ->
             runCatching {
-                val remoteAssociationUri = RemoteAssociationUri(uri)
+                val remote = RemoteAssociationUri(uri)
                 startActivity(
                     Intent(applicationContext, MobileWalletAdapterActivity::class.java)
-                        .setData(remoteAssociationUri.uri))
+                        .setData(remote.uri)
+                )
             }
         }
+
+        // Best-effort load the current pubkey into the shared WalletState so each tab can render
+        // its first frame without needing a separate fetch.
+        refreshPublicKeyAsync()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_toolbar, menu)
-        return true
+    override fun onResume() {
+        super.onResume()
+        refreshPublicKeyAsync()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_qr_scanner -> {
-                // Open ML Kit Barcode Scanner
-                openBarcodeScanner()
-                return true
-            }
+    private fun refreshPublicKeyAsync() {
+        val app = application as? MwalletApplication ?: return
+        lifecycleScope.launch {
+            val address = withContext(Dispatchers.IO) { app.keyRepository.getPublicKeyBase58() }
+            app.walletState.setPublicKey(address)
         }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun openBarcodeScanner() {
-        startActivity(Intent(applicationContext, BarcodeScannerActivity::class.java))
     }
 }

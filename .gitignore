@@ -77,3 +77,5 @@ lint/tmp/
 
 # OSX
 .DS_Store
+screenshots/
+screenshots-v2/

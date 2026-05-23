@@ -17,6 +17,7 @@ import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
 import java.security.SecureRandom
+import com.funkatronics.encoders.Base58
 
 class Ed25519KeyRepository(private val application: Application) {
     private val db by lazy {
@@ -68,6 +69,20 @@ class Ed25519KeyRepository(private val application: Application) {
                     val privateKey = EncryptionUseCase.decrypt(keypair.encryptedPrivateKey)
                     val privateKeyParams = Ed25519PrivateKeyParameters(privateKey, 0)
                     AsymmetricCipherKeyPair(privateKeyParams.generatePublicKey(), privateKeyParams)
+                }
+            }
+        }
+    }
+
+    /** Returns the Solana public key (base58) for the first stored key, or null if none. Does not require auth. */
+    suspend fun getPublicKeyBase58(): String? {
+        return withContext(Dispatchers.IO) {
+            db.keysDao().getAllPublicKeysBase64().firstOrNull()?.let { publicKeyBase64 ->
+                try {
+                    val bytes = android.util.Base64.decode(publicKeyBase64, android.util.Base64.NO_PADDING or android.util.Base64.NO_WRAP)
+                    Base58.encodeToString(bytes)
+                } catch (_: Exception) {
+                    null
                 }
             }
         }

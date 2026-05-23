@@ -6,6 +6,7 @@ package com.solana.mwallet
 
 import android.app.Application
 import com.solana.mwallet.data.Ed25519KeyRepository
+import com.solana.mwallet.data.WalletState
 import com.solana.mwallet.endpoints.BlowfishConverterFactory
 import com.solana.mwallet.endpoints.BlowfishEndpoints
 import okhttp3.OkHttpClient
@@ -15,6 +16,8 @@ class MwalletApplication : Application() {
     val keyRepository: Ed25519KeyRepository by lazy {
         Ed25519KeyRepository(this)
     }
+
+    val walletState: WalletState by lazy { WalletState(this) }
 
     val blowfishService: BlowfishEndpoints by lazy {
         val retrofit = Retrofit.Builder()
