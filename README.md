@@ -25,9 +25,17 @@ git clone https://github.com/solana-mobile/mock-mwa-wallet.git
 
 2. Open the project on Android Studio > Open > `mock-mwa-wallet/build.gradle`
 
-3. **Optional:** Import an existing private key in `local.properties` to use in the wallet. See [Import a private key](#import-a-private-key).
+3. **Optional:** Create a development `local.properties` with a fixed private key and wallet name:
 
-4. Build the app and install on any Android device or emulator.
+```bash
+./gradlew setup
+```
+
+This creates `local.properties` only if it does not already exist. The generated wallet name is `mock.mwa`.
+
+4. **Optional:** Import an existing private key in `local.properties` to use in the wallet. See [Import a private key](#import-a-private-key).
+
+5. Build the app and install on any Android device or emulator.
 
 ## Testing Your App
 

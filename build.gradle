@@ -2,6 +2,8 @@
  * Copyright (c) 2022 Solana Mobile Inc.
  */
 
+import java.security.SecureRandom
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 // Add Navigation safe-args support
@@ -23,6 +25,26 @@ plugins {
     alias libs.plugins.koltin.ksp apply false
 }
 
+def localPropertiesSetupFile = layout.projectDirectory.file('local.properties').asFile
+
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+tasks.register('setup') {
+    description = 'Creates local.properties with mock wallet defaults if missing.'
+    group = 'setup'
+
+    doLast { task ->
+        if (localPropertiesSetupFile.exists()) {
+            task.logger.lifecycle('local.properties already exists; leaving it unchanged.')
+            return
+        }
+
+        byte[] privateKey = new byte[32]
+        new SecureRandom().nextBytes(privateKey)
+
+        localPropertiesSetupFile.text = "privateKey=${privateKey.encodeBase64().toString().replace('=', '')}\nwalletName=mock.mwa\n"
+        task.logger.lifecycle('Created local.properties.')
+    }
 }
