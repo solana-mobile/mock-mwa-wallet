@@ -6,12 +6,17 @@ package com.solana.mwallet
 
 import android.app.Application
 import com.solana.mwallet.data.Ed25519KeyRepository
+import com.solana.mwallet.data.SeedPhraseRepository
 import com.solana.mwallet.endpoints.BlowfishConverterFactory
 import com.solana.mwallet.endpoints.BlowfishEndpoints
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 class MwalletApplication : Application() {
+    val seedPhraseRepository: SeedPhraseRepository by lazy {
+        SeedPhraseRepository(this)
+    }
+
     val keyRepository: Ed25519KeyRepository by lazy {
         Ed25519KeyRepository(this)
     }
@@ -24,5 +29,10 @@ class MwalletApplication : Application() {
             .build()
 
         retrofit.create(BlowfishEndpoints::class.java)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        seedPhraseRepository.importSeedPhraseIfEmpty(BuildConfig.SEED_PHRASE)
     }
 }

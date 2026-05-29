@@ -23,6 +23,23 @@ plugins {
     alias libs.plugins.koltin.ksp apply false
 }
 
+def localPropertiesSetupFile = layout.projectDirectory.file('local.properties').asFile
+
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+tasks.register('setup') {
+    description = 'Creates local.properties with mock wallet defaults if missing.'
+    group = 'setup'
+
+    doLast { task ->
+        if (localPropertiesSetupFile.exists()) {
+            task.logger.lifecycle('local.properties already exists; leaving it unchanged.')
+            return
+        }
+
+        localPropertiesSetupFile.text = "walletName=mock.mwa\n# seedPhrase=<SEED_PHRASE>\n"
+        task.logger.lifecycle('Created local.properties.')
+    }
 }

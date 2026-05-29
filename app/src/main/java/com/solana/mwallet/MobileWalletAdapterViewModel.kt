@@ -403,37 +403,38 @@ class MobileWalletAdapterViewModel(application: Application) : AndroidViewModel(
     }
 
     private suspend fun getKeypair(): AsymmetricCipherKeyPair {
-        // first check if a private key was provided through local props
-        return LocalKeypair.getPrivateKey()?.let { privateKeyRaw ->
-            val privateKeyParams = Ed25519PrivateKeyParameters(privateKeyRaw, 0)
-            (getApplication<MwalletApplication>().keyRepository.getKeypair(privateKeyParams.generatePublicKey().encoded)
-                ?: AsymmetricCipherKeyPair(
-                    privateKeyParams.generatePublicKey(),
-                    privateKeyParams
-                ).also {
-                    getApplication<MwalletApplication>().keyRepository.insertKeypair(it)
-                }).also {
-                val publicKey = it.public as Ed25519PublicKeyParameters
-                val address = Base58.encodeToString(publicKey.encoded)
-                Log.d(TAG, "Using local keypair (add=$address) for authorize request")
-            }
-        } ?: // check if there is an existing keypair
-        getApplication<MwalletApplication>().keyRepository.getExistingKeypair()?.also {
+        // Wallet selection will be added later; for now the selected wallet is seed derivation 0.
+        return getApplication<MwalletApplication>().seedPhraseRepository.getPrimaryKeypair()?.let { keypair ->
+            val privateKey = keypair.private as Ed25519PrivateKeyParameters
+            getOrInsertKeypair(privateKey.encoded)
+        } ?: throw SeedPhraseNotConfiguredException()
+    }
+
+    private suspend fun getOrInsertKeypair(privateKeyRaw: ByteArray): AsymmetricCipherKeyPair {
+        val privateKeyParams = Ed25519PrivateKeyParameters(privateKeyRaw, 0)
+        return (getApplication<MwalletApplication>().keyRepository.getKeypair(privateKeyParams.generatePublicKey().encoded)
+            ?: AsymmetricCipherKeyPair(
+                privateKeyParams.generatePublicKey(),
+                privateKeyParams
+            ).also {
+                getApplication<MwalletApplication>().keyRepository.insertKeypair(it)
+            }).also {
             val publicKey = it.public as Ed25519PublicKeyParameters
             val address = Base58.encodeToString(publicKey.encoded)
-            Log.d(TAG, "Using existing keypair (add=$address) for authorize request")
-        } ?: // no existing or injected keypair, generate a new one
-        getApplication<MwalletApplication>().keyRepository.generateKeypair().also {
-            val publicKey = it.public as Ed25519PublicKeyParameters
-            val address = Base58.encodeToString(publicKey.encoded)
-            Log.d(TAG, "Generated a new keypair (add=$address) for authorize request")
+            Log.d(TAG, "Using seed phrase keypair (add=$address) for authorize request")
         }
     }
+
+    private class SeedPhraseNotConfiguredException :
+        IllegalStateException("Seed phrase not configured")
 
     private suspend fun getKeypairSafe(): Result<AsymmetricCipherKeyPair> =
         try {
             Log.d(TAG, "getKeypairSafe: Attempting to get keypair")
             Result.success(getKeypair())
+        } catch (e: SeedPhraseNotConfiguredException) {
+            Log.w(TAG, "getKeypairSafe: Seed phrase is not configured", e)
+            Result.failure(e)
         } catch (e: UserNotAuthenticatedException) {
             Log.d(TAG, "getKeypairSafe: User not authenticated, requesting biometric")
             val future = NotifyingCompletableFuture<BiometricPrompt.AuthenticationResult>()

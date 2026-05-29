@@ -10,6 +10,9 @@ import androidx.room.Query
 
 @Dao
 internal interface Ed25519KeyDao {
+    @Query("DELETE FROM keys")
+    fun deleteAll()
+
     @Query("SELECT * FROM keys WHERE public_key_b64 = :publicKeyBase64")
     fun get(publicKeyBase64: String): Ed25519KeyPair?
 
